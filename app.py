@@ -10,7 +10,7 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 api_service_name = "youtube"
 api_version = "v3"
-client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
+client_secrets_file = os.path.dirname(os.path.abspath(__file__))+"\\YOUR_CLIENT_SECRET_FILE.json"
 flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
 	client_secrets_file, scopes)
 credentials = flow.run_local_server()
