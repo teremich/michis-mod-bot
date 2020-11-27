@@ -6,8 +6,8 @@ What to install:
 
 -   python 3.8.5
 -   pip
-    -   googleapiclient
-    -   google_auth_oauthlib
+    -   pip install --upgrade google-api-python-client
+    -   pip install --upgrade google-auth-oauthlib google-auth-httplib2
 
 Make a Youtube account for the bot, give it mod rights.
 At start choose to log in via its account.
