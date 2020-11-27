@@ -40,3 +40,14 @@ request = youtube.videos().list(
 response = request.execute()
 
 CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
+
+request = youtube.liveChatMessages().list(
+	liveChatId=CHATID,
+	part="id,snippet,authorDetails",
+	maxResults=2000
+)
+response = request.execute()
+
+msgs = response["items"]
+for message in msgs:
+	print(message["snippet"]["testMessageDetails"]["messageText"])
