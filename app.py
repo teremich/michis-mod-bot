@@ -56,8 +56,8 @@ response = request.execute()
 msgs = response["items"]
 msgs = msgs[::-1]
 for message in msgs:
+    print(message)
     if ("mitspielen" in message["snippet"]["textMessageDetails"]["messageText"]):
-        print(message["snippet"])
         request = youtube.liveChatMessages().insert(
             part="snippet",
             body={
@@ -65,7 +65,7 @@ for message in msgs:
                     "liveChatId": CHATID,
                     "type": "textMessageEvent",
                     "textMessageDetails": {
-                        "messageText": "first api written text message @someone"
+                        "messageText": "@{0} -> Mitspielen kann jeder, egal welches Level."[:200].format(message["authorDetails"]["displayName"])
                     }
                 }
             }
