@@ -15,4 +15,4 @@ At start choose to log in via its account.
 TODO:
 
 -   bot
--   get chat's messages
+-   write messages to chat
