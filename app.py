@@ -43,6 +43,7 @@ request = youtube.videos().list(
 response = request.execute()
 
 CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
+print(CHATID)
 # Getting 2000 messages from youtube
 request = youtube.liveChatMessages().list(
     liveChatId=CHATID,
@@ -53,5 +54,19 @@ response = request.execute()
 
 # printing the message texts.
 msgs = response["items"]
+msgs = msgs[::-1]
 for message in msgs:
-    print(message["snippet"]["textMessageDetails"]["messageText"])
+    if ("mitspielen" in message["snippet"]["textMessageDetails"]["messageText"]):
+        request = youtube.liveChatMessages().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "liveChatId": "",
+                    "type": "textMessageEvent",
+                    "textMessageDetails": {
+                        "messageText": "first api written text message @{0}".format(message["snippet"])
+                    }
+                }
+            }
+        )
+        response = request.execute()
