@@ -33,7 +33,7 @@ vidid = ""
 try:
     vidid = response["items"][0]["id"]["videoId"]
 except IndexError:
-    #raise Exception("NO LIVESTREAMS FOR THAT USER (Geilomat 3000)")
+    # raise Exception("NO LIVESTREAMS FOR THAT USER (Geilomat 3000)")
     vidid = "avH-8AE0lOI"
 # Getting id for the chat of the livestream
 request = youtube.videos().list(
@@ -57,6 +57,7 @@ msgs = response["items"]
 msgs = msgs[::-1]
 for message in msgs:
     if ("mitspielen" in message["snippet"]["textMessageDetails"]["messageText"]):
+        print(message["snippet"])
         request = youtube.liveChatMessages().insert(
             part="snippet",
             body={
@@ -64,7 +65,7 @@ for message in msgs:
                     "liveChatId": CHATID,
                     "type": "textMessageEvent",
                     "textMessageDetails": {
-                        "messageText": "first api written text message @{0}".format(message["snippet"])
+                        "messageText": "first api written text message @someone"
                     }
                 }
             }
