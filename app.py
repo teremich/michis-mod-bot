@@ -61,7 +61,7 @@ for message in msgs:
             part="snippet",
             body={
                 "snippet": {
-                    "liveChatId": "",
+                    "liveChatId": CHATID,
                     "type": "textMessageEvent",
                     "textMessageDetails": {
                         "messageText": "first api written text message @{0}".format(message["snippet"])
