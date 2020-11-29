@@ -15,18 +15,6 @@ commandsList = [
     xp.xp
 ]
 
-# Define words to listen for and the responses to give
-activatorWords = [
-    {
-        "word": "mitspielen",
-        "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
-    },
-    {
-        "word": "mitmachen",
-        "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
-    }
-]
-
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -50,6 +38,7 @@ youtube = googleapiclient.discovery.build(
 def main():
     while True:
         # Searching for Livestream by User with below written channelId
+
         request = youtube.search().list(
             part="snippet",
             channelId="UCvlsCHPqjj4Ydanpp_QZeOA",
@@ -57,7 +46,9 @@ def main():
             maxResults=1,
             type="video"
         )
-        response = request.execute()
+        hour = int(time.strftime("%H", time.localtime()))
+        if hour > 14 and hour < 22 or TESTRUN:
+            response = request.execute()
         vidid = ""
         # Getting the VideoId or raising error if no livestream was found
         try:
@@ -114,21 +105,38 @@ def main():
                             raise IndexError(
                                 "Could not write a message to Chat, trying to reconnect...")
 
+                    def listenForWords(message):
+                        # Define words to listen for and the responses to give
+                        activatorWords = [
+                            {
+                                "word": "mitspielen",
+                                "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
+                            },
+                            {
+                                "word": "mitmachen",
+                                "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
+                            }
+                        ]
+                        for activator in activatorWords:
+                            if (activator["word"] in message["snippet"]["textMessageDetails"]["messageText"]):
+                                sendText(activator["response"],
+                                         message["authorDetails"]["displayName"])
+
+                    def listenForCommands(message):
+                        for com in commandsList:
+                            com({"sendText": sendText}, message)
+
                     i = 0
                     for i in range(len(response["items"])-1, -1, -1):
                         if response["items"][i]["id"] == newestChatId:
                             break
                     for j in range(i, len(response["items"])):
                         message = response["items"][j]
-                        # listenForSpam()
-                        # listenForWords(message)
-                        for activator in activatorWords:
-                            if (activator["word"] in message["snippet"]["textMessageDetails"]["messageText"]):
-                                sendText(activator["response"],
-                                         message["authorDetails"]["displayName"])
-                        # listenForCommands(message)
-                        for com in commandsList:
-                            com({"sendText": sendText}, message)
+                        # listenForSpam(message)
+                        # listenForFilter(message)
+                        listenForWords(message)
+                        listenForCommands(message)
+
                     newestChatId = response["items"][-1]["id"]
                 except IndexError:
                     break
