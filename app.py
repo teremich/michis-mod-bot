@@ -5,14 +5,14 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 
-from commands import xp
+from commands import *
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
 TESTRUN = True
 
 # Commands
 commandsList = [
-    xp.xp
+    xp
 ]
 
 
@@ -37,7 +37,7 @@ youtube = googleapiclient.discovery.build(
 
 def getListen():
     toRet = {}
-    with open("commands\\listen.txt", "r+") as f:
+    with open("listen.txt", "r+") as f:
         for line in f:
             if line[-1] == "\n":
                 excludeNewLine = 1
