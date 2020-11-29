@@ -48,6 +48,14 @@ def getListen():
     return toRet
 
 
+def count(item, L):
+    c = 0
+    for o in L:
+        if o == item:
+            c += 1
+    return c
+
+
 def main():
     while True:
         # Searching for Livestream by User with below written channelId
@@ -83,6 +91,7 @@ def main():
             CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
             print(CHATID)
             newestChatId = ""
+            strikes = {}
             while True:
                 try:
                     # Getting 2000 messages from youtube
@@ -120,6 +129,25 @@ def main():
                             raise IndexError(
                                 "Could not write a message to Chat, trying to reconnect...")
 
+                    def sendTimeout(channelId, duration):
+                        print(
+                            "sent timeout request with following parameters:", channelId, duration)
+                        request = youtube.liveChatBans().insert(
+                            part="snippet",
+                            body={
+                                "snippet": {
+                                    "type": "temporary",
+                                    "bannedUserDetails": {
+                                            "channelId": channelId
+                                    },
+                                    "liveChatId": CHATID,
+                                    "banDurationSeconds": duration
+                                }
+                            }
+                        )
+                        response = request.execute()
+                        print(response)
+
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
                         activatorWords = getListen()
@@ -132,13 +160,45 @@ def main():
                         for com in commandsList:
                             com({"sendText": sendText}, message)
 
+                    def strike(userid, strength):
+                        if strength == 1:
+                            duration = 5
+                        elif strength == 2:
+                            duration = 20
+                        else:
+                            duration = 300
+                        sendTimeout(userid, duration)
+
+                    def listenForSpam(items):
+                        users = []
+                        for msgRes in items:
+                            for userObj in users:
+                                if userObj["id"] == msgRes["authorDetails"]["channelId"]:
+                                    userObj["msgs"].append(
+                                        msgRes["snippet"]["textMessageDetails"]["messageText"])
+                            else:
+                                userObj.append{"id": msgRes["authorDetails"]["channelId"], "msgs": [msgRes["snippet"]["textMessageDetails"]["messageText"]]}
+                        for user in users:
+                            for msg in user["msgs"]:
+                                if count(msg, user["msgs"]) > 3:
+                                    if user["id"] in strikes.keys():
+                                        strikes[user["id"]]["count"] += 1
+                                    else:
+                                        strikes[user["id"]] = {
+                                            "count": 1, "made": time.time()}
+                                    strike(
+                                        user["id"], strikes[user["id"]]["count"])
+                        for s in strikes:
+                            if strikes[s]["made"] < time.time()-30*60:
+                                del strikes[s]
+
                     i = 0
                     for i in range(len(response["items"])-1, -1, -1):
                         if response["items"][i]["id"] == newestChatId:
                             break
+                    listenForSpam(response["items"])
                     for j in range(i, len(response["items"])):
                         message = response["items"][j]
-                        # listenForSpam(message)
                         # listenForFilter(message)
                         listenForWords(message)
                         listenForCommands(message)

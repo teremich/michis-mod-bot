@@ -16,6 +16,7 @@ At start choose to log in via its account.
 TODO:
 
 -   bot
+-   add timeouts
 -   add commands and responses
 -   add spam filters
 -   add words to listen for
