@@ -4,6 +4,27 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 
+from commands import commonFunctions
+from commands import xp
+
+# Define commands
+commandsList = [
+    xp.xp
+]
+
+# Define words to listen for
+activatorWords = [
+    {
+        "word": "mitspielen",
+        "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
+    },
+    {
+        "word": "mitmachen",
+        "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
+    }
+]
+
+
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
           "https://www.googleapis.com/auth/youtube.force-ssl"]
@@ -52,22 +73,14 @@ request = youtube.liveChatMessages().list(
 )
 response = request.execute()
 
+
 # printing the message texts.
 msgs = response["items"]
 msgs = msgs[::-1]
 for message in msgs:
-    print(message)
-    if ("mitspielen" in message["snippet"]["textMessageDetails"]["messageText"]):
-        request = youtube.liveChatMessages().insert(
-            part="snippet",
-            body={
-                "snippet": {
-                    "liveChatId": CHATID,
-                    "type": "textMessageEvent",
-                    "textMessageDetails": {
-                        "messageText": "@{0} -> Mitspielen kann jeder, egal welches Level."[:200].format(message["authorDetails"]["displayName"])
-                    }
-                }
-            }
-        )
-        response = request.execute()
+    for activator in activatorWords:
+        if (activator["word"] in message["snippet"]["textMessageDetails"]["messageText"]):
+            commonFunctions.sendText(youtube, CHATID, activator["response"],
+                                     message["authorDetails"]["displayName"])
+    for com in commandsList:
+        com(youtube, CHATID, message)
