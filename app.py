@@ -33,8 +33,8 @@ vidid = ""
 try:
     vidid = response["items"][0]["id"]["videoId"]
 except IndexError:
-    # raise Exception("NO LIVESTREAMS FOR THAT USER (Geilomat 3000)")
-    vidid = "avH-8AE0lOI"
+    raise Exception("NO LIVESTREAMS FOR THAT USER")
+
 # Getting id for the chat of the livestream
 request = youtube.videos().list(
     part="snippet,contentDetails,statistics,liveStreamingDetails",
