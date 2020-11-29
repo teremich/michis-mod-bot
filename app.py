@@ -4,15 +4,14 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 
-from commands import commonFunctions
 from commands import xp
 
-# Define commands
+# Commands
 commandsList = [
     xp.xp
 ]
 
-# Define words to listen for
+# Define words to listen for and the responses to give
 activatorWords = [
     {
         "word": "mitspielen",
@@ -74,13 +73,34 @@ request = youtube.liveChatMessages().list(
 response = request.execute()
 
 
+def sendText(text, tag="NULL"):
+    if tag == "NULL":
+        msgText = text[:200]
+    else:
+        msgText = "@{0} -> {1}".format(tag, text)[:200]
+    request = youtube.liveChatMessages().insert(
+        part="snippet",
+        body={
+            "snippet": {
+                "liveChatId": CHATID,
+                "type": "textMessageEvent",
+                "textMessageDetails": {
+                        "messageText": msgText
+                }
+            }
+        }
+    )
+    response = request.execute()
+    # print(response)
+
+
 # printing the message texts.
 msgs = response["items"]
-msgs = msgs[::-1]
+#msgs = msgs[::-1]
 for message in msgs:
     for activator in activatorWords:
         if (activator["word"] in message["snippet"]["textMessageDetails"]["messageText"]):
-            commonFunctions.sendText(youtube, CHATID, activator["response"],
-                                     message["authorDetails"]["displayName"])
+            sendText(activator["response"],
+                     message["authorDetails"]["displayName"])
     for com in commandsList:
-        com(youtube, CHATID, message)
+        com({"sendText": sendText}, message)
