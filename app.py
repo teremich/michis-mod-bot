@@ -35,6 +35,19 @@ youtube = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=credentials)
 
 
+def getListen():
+    toRet = {}
+    with open("commands\\listen.txt", "r+") as f:
+        for line in f:
+            if line[-1] == "\n":
+                excludeNewLine = 1
+            else:
+                excludeNewLine = 0
+            splitter = line.find(":")
+            toRet[line[:splitter]] = line[splitter+1:-excludeNewLine]
+    return toRet
+
+
 def main():
     while True:
         # Searching for Livestream by User with below written channelId
@@ -49,6 +62,8 @@ def main():
         hour = int(time.strftime("%H", time.localtime()))
         if hour > 14 and hour < 22 or TESTRUN:
             response = request.execute()
+        else:
+            response = {"items": []}
         vidid = ""
         # Getting the VideoId or raising error if no livestream was found
         try:
@@ -107,16 +122,7 @@ def main():
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
-                        activatorWords = [
-                            {
-                                "word": "mitspielen",
-                                "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
-                            },
-                            {
-                                "word": "mitmachen",
-                                "response": "Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen."
-                            }
-                        ]
+                        activatorWords = getListen()
                         for activator in activatorWords:
                             if (activator["word"] in message["snippet"]["textMessageDetails"]["messageText"]):
                                 sendText(activator["response"],
