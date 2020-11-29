@@ -17,5 +17,7 @@ TODO:
 
 -   bot
 -   add commands and responses
+-   add more words to listen for
+-   add spam filters
 -   test our limits (use the bot in a real live stream)
 -   read the pinned messages in the developer's discord chat
