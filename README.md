@@ -16,7 +16,6 @@ At start choose to log in via its account.
 TODO:
 
 -   bot
--   make the infinie loop (to not restart the bot every time we want to get chat's messages)
 -   add commands and responses
 -   test our limits (use the bot in a real live stream)
 -   read the pinned messages in the developer's discord chat
