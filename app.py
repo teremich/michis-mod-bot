@@ -8,7 +8,7 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = True
+TESTRUN = False
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
