@@ -48,16 +48,17 @@ def getListen():
             toRet[line[:splitter]] = line[splitter+1:-excludeNewLine]
     return toRet
 
+
 def getFilter():
-	words = []
-	with open("filter.txt", "r+") as f:
-		for line in f:
-			if line[-1] == "\n":
-				excludeNewLine = 1
-			else
-				excludeNewLine = 0
-			words.append(line[:-excludeNewLine]) 
-	return words
+    words = []
+    with open("filter.txt", "r+") as f:
+        for line in f:
+            if line[-1] == "\n":
+                excludeNewLine = 1
+            else:
+                excludeNewLine = 0
+            words.append(line[:-excludeNewLine])
+    return words
 
 
 def count(item, L):
@@ -101,6 +102,7 @@ def main():
             if len(response["items"]) < 1:
                 continue
             CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
+            STREAMAGE = response["items"][0]["snippet"]["publishedAt"]
             print(CHATID)
             newestChatId = ""
             strikes = {}
@@ -170,7 +172,7 @@ def main():
                                          message["authorDetails"]["displayName"])
 
                     def strike(userid):
-                    	if userid in strikes.keys():
+                        if userid in strikes.keys():
                             strikes[userid]["count"] += 1
                         else:
                             strikes[userid] = {
@@ -185,11 +187,12 @@ def main():
                         sendTimeout(userid, duration)
 
                     def listenForFilter(message):
-                    	for word in message["snippet"]["textMessageDetails"]["messageText"]:
-                    		if word in wordFilter:
-                    			userid = message["authorDetails"]["channelId"]
-                    			strike(userid)
-                    			sendText("Kannst du das nochmal ohne '"+word+"' sagen?", message["authorDetails"]["displayName"])
+                        for word in message["snippet"]["textMessageDetails"]["messageText"]:
+                            if word in wordFilter:
+                                userid = message["authorDetails"]["channelId"]
+                                strike(userid)
+                                sendText("Kannst du das nochmal ohne '"+word +
+                                         "' sagen?", message["authorDetails"]["displayName"])
 
                     def listenForSpam(items):
                         users = []
@@ -219,7 +222,8 @@ def main():
                         message = response["items"][j]
                         listenForFilter(message)
                         listenForWords(message)
-                        executeCommands({"sendText": sendText}, message)
+                        executeCommands(
+                            {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
 
                     newestChatId = response["items"][-1]["id"]
                     time.sleep(5)
