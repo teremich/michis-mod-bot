@@ -18,19 +18,18 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 api_service_name = "youtube"
 api_version = "v3"
 client_secrets_file = os.path.dirname(
-    os.path.abspath(__file__)+"\\client_secret.json")
+    os.path.abspath(__file__))+"\\client_secret.json"
 stream_client_secrets_file = os.path.dirname(
-    os.path.abspath(__file__)+"\\stream_client_secret.json")
+    os.path.abspath(__file__))+"\\stream_client_secret.json"
 flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
     client_secrets_file, scopes)
 stream_flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
     stream_client_secrets_file, scopes)
 if not TESTRUN:
     credentials = flow.run_console()
-    stream_credentials = stream_flow.run_console()
 else:
     credentials = flow.run_local_server()
-    stream_credentials = stream_flow.run_local_server()
+stream_credentials = stream_flow.run_console()
 youtube = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=credentials)
 stream_youtube = googleapiclient.discovery.build(
@@ -153,9 +152,9 @@ def main():
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
                         activatorWords = getListen()
-                        for activator in activatorWords:
-                            if (activator["word"] in message["snippet"]["textMessageDetails"]["messageText"]):
-                                sendText(activator["response"],
+                        for word in activatorWords:
+                            if (word in message["snippet"]["textMessageDetails"]["messageText"]):
+                                sendText(activatorWords[word],
                                          message["authorDetails"]["displayName"])
 
                     def strike(userid, strength):
@@ -175,8 +174,8 @@ def main():
                                     userObj["msgs"].append(
                                         msgRes["snippet"]["textMessageDetails"]["messageText"])
                             else:
-                                userObj.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
-                                               msgRes["snippet"]["textMessageDetails"]["messageText"]]})
+                                users.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
+                                    msgRes["snippet"]["textMessageDetails"]["messageText"]]})
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
@@ -194,6 +193,7 @@ def main():
                     i = 0
                     for i in range(len(response["items"])-1, -1, -1):
                         if response["items"][i]["id"] == newestChatId:
+                            i += 1
                             break
                     listenForSpam(response["items"])
                     for j in range(i, len(response["items"])):

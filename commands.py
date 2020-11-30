@@ -1,9 +1,6 @@
 import urllib
 import json
 import datetime
-# TODO: Afterstream, debug
-commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
-                "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!tlou": command_tlou, "!turnier": command_turnier, "!updateconsole": command_updateConsole, "!xp": command_xp}
 
 
 def command_xp(parentInputs, msg):
@@ -133,6 +130,10 @@ def command_updateConsole(parentInputs, msg):
 
 def command_name(parentInputs, msg):
     command = "!"
+
+
+commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
+                "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!tlou": command_tlou, "!turnier": command_turnier, "!updateconsole": command_updateConsole, "!xp": command_xp}
 
 
 def executeCommands(parentInputs, msg):
