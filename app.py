@@ -48,6 +48,17 @@ def getListen():
             toRet[line[:splitter]] = line[splitter+1:-excludeNewLine]
     return toRet
 
+def getFilter():
+	words = []
+	with open("filter.txt", "r+") as f:
+		for line in f:
+			if line[-1] == "\n":
+				excludeNewLine = 1
+			else
+				excludeNewLine = 0
+			words.append(line[:-excludeNewLine]) 
+	return words
+
 
 def count(item, L):
     c = 0
@@ -94,6 +105,7 @@ def main():
             newestChatId = ""
             strikes = {}
             activatorWords = getListen()
+            wordFilter = getFilter()
             while True:
                 try:
                     # Getting 2000 messages from youtube
@@ -157,7 +169,13 @@ def main():
                                 sendText(activatorWords[word],
                                          message["authorDetails"]["displayName"])
 
-                    def strike(userid, strength):
+                    def strike(userid):
+                    	if userid in strikes.keys():
+                            strikes[userid]["count"] += 1
+                        else:
+                            strikes[userid] = {
+                                "count": 1, "made": time.time()}
+                        strength = strikes[userid]
                         if strength == 1:
                             duration = 5
                         elif strength == 2:
@@ -165,6 +183,13 @@ def main():
                         else:
                             duration = 300
                         sendTimeout(userid, duration)
+
+                    def listenForFilter(message):
+                    	for word in message["snippet"]["textMessageDetails"]["messageText"]:
+                    		if word in wordFilter:
+                    			userid = message["authorDetails"]["channelId"]
+                    			strike(userid)
+                    			sendText("Kannst du das nochmal ohne '"+word+"' sagen?", message["authorDetails"]["displayName"])
 
                     def listenForSpam(items):
                         users = []
@@ -179,13 +204,7 @@ def main():
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
-                                    if user["id"] in strikes.keys():
-                                        strikes[user["id"]]["count"] += 1
-                                    else:
-                                        strikes[user["id"]] = {
-                                            "count": 1, "made": time.time()}
-                                    strike(
-                                        user["id"], strikes[user["id"]]["count"])
+                                    strike(user["id"])
                         for s in strikes:
                             if strikes[s]["made"] < time.time()-30*60:
                                 del strikes[s]
@@ -198,11 +217,12 @@ def main():
                     listenForSpam(response["items"])
                     for j in range(i, len(response["items"])):
                         message = response["items"][j]
-                        # listenForFilter(message)
+                        listenForFilter(message)
                         listenForWords(message)
                         executeCommands({"sendText": sendText}, message)
 
                     newestChatId = response["items"][-1]["id"]
+                    time.sleep(5)
                 except IndexError:
                     break
 
