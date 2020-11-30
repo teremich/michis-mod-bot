@@ -1,24 +1,21 @@
 import urllib
 import json
 import datetime
-# TODO: Afterstream, debug, roadto, spielstunden
+# TODO: Afterstream, debug
 commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
                 "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!tlou": command_tlou, "!turnier": command_turnier, "!updateconsole": command_updateConsole, "!xp": command_xp}
 
 
 def command_xp(parentInputs, msg):
-    command = "!xp"
-    if command == msg["snippet"]["textMessageDetails"]["messageText"][:len(command)]:
-        res = urllib.request.urlopen(
-            "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=326460&key=7359F5150A808259B6C38735D89B910A&steamid=76561198091960570")
-        jsonRes = json.loads(res.read())
-        xp = ""
-        print(jsonRes)
-        for item in jsonRes["playerstats"]["stats"]:
-            if item["name"] == "xp":
-                xp = item["value"]
-                break
-        parentInputs["sendText"](xp, msg["authorDetails"]["displayName"])
+    res = urllib.request.urlopen(
+        "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=326460&key=7359F5150A808259B6C38735D89B910A&steamid=76561198091960570")
+    jsonRes = json.loads(res.read())
+    xp = ""
+    for item in jsonRes["playerstats"]["stats"]:
+        if item["name"] == "xp":
+            xp = item["value"]
+            break
+    parentInputs["sendText"](xp, msg["authorDetails"]["displayName"])
 
 
 def command_hunad(parentInputs, msg):
@@ -76,9 +73,16 @@ def command_reddit(parentInputs, msg):
 
 
 def command_roadto(parentInputs, msg):
-    # parentInputs["sendText"]("https://www.reddit.com/r/dermichi",
-    #                          msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
-    pass
+    res = urllib.request.urlopen(
+        "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=326460&key=7359F5150A808259B6C38735D89B910A&steamid=76561198091960570")
+    jsonRes = json.loads(res.read())
+    xp = ""
+    for item in jsonRes["playerstats"]["stats"]:
+        if item["name"] == "xp":
+            xp = item["value"]
+            break
+    parentInputs["sendText"](
+        2500000-int(xp), msg["authorDetails"]["displayName"])
 
 
 def command_sew(parentInputs, msg):
@@ -87,27 +91,42 @@ def command_sew(parentInputs, msg):
 
 
 def command_spielstunden(parentInputs, msg):
-    pass
+    res = urllib.request.urlopen(
+        "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=7359F5150A808259B6C38735D89B910A&format=json&steamid=76561198091960570"
+    )
+    jsonRes = json.loads(res.read())
+    spielstunden = "-1"
+    for game in jsonRes["response"]["games"]:
+        if game["appid"] == "326460":
+            spielstunden = game["playtime_forever"]
+            break
+    parentInputs["sendText"]("%.2f" % (spielstunden/60),
+                             msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
 
 
 def command_statistik(parentInputs, msg):
-    pass
+    parentInputs["sendText"]("https://docs.google.com/spreadsheets/d/1mVHx01Px69b0l5vRhVRKkamsZ1aSNR9CA7sOzKt0FDQ/edit?usp=sharing SSL Statistik von Michi",
+                             msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
 
 
 def command_sub(parentInputs, msg):
-    pass
+    parentInputs["sendText"]("Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8",
+                             msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
 
 
 def command_tlou(parentInputs, msg):
-    pass
+    parentInputs["sendText"]("The Last of Us II ist der direkte Nachfolger vom ersten Teil und setzt die Story fort. In dieser postapokalyptischen Welt kämpfen wir gegen Infizierte und Hunter, die uns das Leben zur Hölle machen.",
+                             msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
 
 
 def command_turnier(parentInputs, msg):
-    pass
+    parentInputs["sendText"]("https://discord.gg/8vGVBVu",
+                             msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
 
 
 def command_updateConsole(parentInputs, msg):
-    pass
+    parentInputs["sendText"]("Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen",
+                             msg["snippet"]["textMessageDetails"]["messageText"].split(" ")[1:])
 
 # PRESET
 
