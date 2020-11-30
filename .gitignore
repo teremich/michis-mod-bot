@@ -1,5 +1,6 @@
 #Secrets
 client_secret.json
+stream_client_secret.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
