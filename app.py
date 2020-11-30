@@ -18,15 +18,23 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 api_service_name = "youtube"
 api_version = "v3"
 client_secrets_file = os.path.dirname(
-    os.path.abspath(__file__))+"\\client_secret.json"
+    os.path.abspath(__file__)+"\\client_secret.json")
+stream_client_secrets_file = os.path.dirname(
+    os.path.abspath(__file__)+"\\stream_client_secret.json")
 flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
     client_secrets_file, scopes)
+stream_flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+    stream_client_secrets_file, scopes)
 if not TESTRUN:
     credentials = flow.run_console()
+    stream_credentials = stream_flow.run_console()
 else:
     credentials = flow.run_local_server()
+    stream_credentials = stream_flow.run_local_server()
 youtube = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=credentials)
+stream_youtube = googleapiclient.discovery.build(
+    api_service_name, api_version, credentials=stream_credentials)
 
 
 def getListen():
@@ -54,7 +62,7 @@ def main():
     while True:
         # Searching for Livestream by User with below written channelId
 
-        request = youtube.search().list(
+        request = stream_youtube.search().list(
             part="snippet",
             channelId="UCvlsCHPqjj4Ydanpp_QZeOA",
             eventType="live",
@@ -62,7 +70,7 @@ def main():
             type="video"
         )
         hour = int(time.strftime("%H", time.localtime()))
-        if hour > 14 and hour < 22 or TESTRUN:
+        if hour > 15 and hour < 23 or TESTRUN:
             response = request.execute()
         else:
             response = {"items": []}

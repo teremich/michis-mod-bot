@@ -9,9 +9,14 @@ What to install:
     -   pip install --upgrade google-api-python-client
     -   pip install --upgrade google-auth-oauthlib google-auth-httplib2
 
-Make a Youtube account for the bot, give it mod rights.
+Things to do if you want to copy the code:
+
+-   Make a Youtube account for the bot, give it mod rights.
+-   Get 2 API client secret files from google (console.developers.google.com)
+-   name one "client_secret.json" and the other one "stream_client_secret.json"
+
 start with "python app.py"
-At start choose to log in via its account.
+At start choose to log in via the bot's account.
 
 TODO:
 
