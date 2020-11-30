@@ -15,8 +15,5 @@ At start choose to log in via its account.
 
 TODO:
 
--   bot
--   add responses
--   add words to listen for
 -   test our limits (use the bot in a real live stream)
 -   read the pinned messages in the developer's discord chat
