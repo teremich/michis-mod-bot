@@ -5,16 +5,10 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 
-from commands import *
+from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
 TESTRUN = True
-
-# Commands
-commandsList = [
-    xp
-]
-
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -156,10 +150,6 @@ def main():
                                 sendText(activator["response"],
                                          message["authorDetails"]["displayName"])
 
-                    def listenForCommands(message):
-                        for com in commandsList:
-                            com({"sendText": sendText}, message)
-
                     def strike(userid, strength):
                         if strength == 1:
                             duration = 5
@@ -177,7 +167,8 @@ def main():
                                     userObj["msgs"].append(
                                         msgRes["snippet"]["textMessageDetails"]["messageText"])
                             else:
-                                userObj.append{"id": msgRes["authorDetails"]["channelId"], "msgs": [msgRes["snippet"]["textMessageDetails"]["messageText"]]}
+                                userObj.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
+                                               msgRes["snippet"]["textMessageDetails"]["messageText"]]})
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
@@ -201,7 +192,7 @@ def main():
                         message = response["items"][j]
                         # listenForFilter(message)
                         listenForWords(message)
-                        listenForCommands(message)
+                        executeCommands({"sendText": sendText}, message)
 
                     newestChatId = response["items"][-1]["id"]
                 except IndexError:
