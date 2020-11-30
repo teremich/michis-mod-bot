@@ -63,7 +63,7 @@ def main():
 
         request = stream_youtube.search().list(
             part="snippet",
-            channelId="UCvlsCHPqjj4Ydanpp_QZeOA",
+            channelId="UCGDTo1icA1LW56wWGIQ9GQA",
             eventType="live",
             maxResults=1,
             type="video"
