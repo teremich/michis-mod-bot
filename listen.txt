@@ -1,2 +1,3 @@
 mitspielen:Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen.
 mitmachen:Mitspielen kann jeder, egal welches Level. Ihr müsst nur die Lobby finden und dieser joinen.
+lieblingswaffe:Aufgrund der extremen Variabilität von Spielmodi, Distanz und Position habe ich nicht DIE eine Lieblingswaffe. Jede Waffe kann in einer bestimmten Situation gut sein.

@@ -93,6 +93,7 @@ def main():
             print(CHATID)
             newestChatId = ""
             strikes = {}
+            activatorWords = getListen()
             while True:
                 try:
                     # Getting 2000 messages from youtube
@@ -151,7 +152,6 @@ def main():
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
-                        activatorWords = getListen()
                         for word in activatorWords:
                             if (word in message["snippet"]["textMessageDetails"]["messageText"]):
                                 sendText(activatorWords[word],
