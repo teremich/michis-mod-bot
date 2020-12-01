@@ -151,23 +151,26 @@ def main():
                                 "Could not write a message to Chat, trying to reconnect...")
 
                     def sendTimeout(channelId, duration):
-                        print(
-                            "sent timeout request with following parameters:", channelId, duration)
-                        request = youtube.liveChatBans().insert(
-                            part="snippet",
-                            body={
-                                "snippet": {
-                                    "type": "temporary",
-                                    "bannedUserDetails": {
-                                            "channelId": channelId
-                                    },
-                                    "liveChatId": CHATID,
-                                    "banDurationSeconds": duration
+                        try:
+                            print(
+                                "sent timeout request with following parameters:", channelId, duration)
+                            request = youtube.liveChatBans().insert(
+                                part="snippet",
+                                body={
+                                    "snippet": {
+                                        "type": "temporary",
+                                        "bannedUserDetails": {
+                                                "channelId": channelId
+                                        },
+                                        "liveChatId": CHATID,
+                                        "banDurationSeconds": duration
+                                    }
                                 }
-                            }
-                        )
-                        response = request.execute()
-                        print(response)
+                            )
+                            response = request.execute()
+                            print(response)
+                        except Exception:
+                            print("didnt work, probably mod or streamer")
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
