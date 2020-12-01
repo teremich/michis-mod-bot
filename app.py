@@ -187,7 +187,7 @@ def main():
                         else:
                             strikes[userid] = {
                                 "count": 1, "made": time.time()}
-                        strength = strikes[userid]
+                        strength = strikes[userid]["count"]
                         if strength == 1:
                             duration = 5
                         elif strength == 2:
