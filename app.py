@@ -38,7 +38,7 @@ stream_youtube = googleapiclient.discovery.build(
 
 def getListen():
     toRet = {}
-    with open("listen.txt", "r+") as f:
+    with open("listen.txt", "r") as f:
         for line in f:
             if line[-1] == "\n":
                 excludeNewLine = 1
@@ -51,13 +51,13 @@ def getListen():
 
 def getFilter():
     words = []
-    with open("filter.txt", "r+") as f:
+    with open("filter.txt", "r") as f:
         for line in f:
             if line[-1] == "\n":
                 excludeNewLine = 1
             else:
                 excludeNewLine = 0
-            words.append(line[:-excludeNewLine])
+            words.append(line[:-excludeNewLine].lower())
     return words
 
 
@@ -70,6 +70,7 @@ def count(item, L):
 
 
 def main():
+    newestChatId = ""
     while True:
         # Searching for Livestream by User with below written channelId
 
@@ -81,10 +82,15 @@ def main():
             type="video"
         )
         hour = int(time.strftime("%H", time.localtime()))
-        if hour > 15 and hour < 23 or TESTRUN:
+        if hour > 14 and hour < 23 or TESTRUN:
             response = request.execute()
+            if TESTRUN:
+                print("searching for stream...")
+                print(response)
         else:
             response = {"items": []}
+        if TESTRUN:
+            print(hour)
         vidid = ""
         # Getting the VideoId or raising error if no livestream was found
         try:
@@ -104,7 +110,6 @@ def main():
             CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
             STREAMAGE = response["items"][0]["snippet"]["publishedAt"]
             print(CHATID)
-            newestChatId = ""
             strikes = {}
             activatorWords = getListen()
             wordFilter = getFilter()
@@ -123,7 +128,7 @@ def main():
 
                     def sendText(text, tag="NULL"):
                         if tag == "NULL":
-                            msgText = text[:200]
+                            msgText = str(text)[:200]
                         else:
                             msgText = "@{0} -> {1}".format(tag, text)[:200]
                         request = youtube.liveChatMessages().insert(
@@ -187,12 +192,21 @@ def main():
                         sendTimeout(userid, duration)
 
                     def listenForFilter(message):
-                        for word in message["snippet"]["textMessageDetails"]["messageText"]:
-                            if word in wordFilter:
+                        messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
+                            " ")
+
+                        for word in messageWords:
+                            if TESTRUN:
+                                print(word)
+                            if word.lower() in wordFilter:
+                                if TESTRUN:
+                                    print("FOUND BAD WORD")
                                 userid = message["authorDetails"]["channelId"]
                                 strike(userid)
                                 sendText("Kannst du das nochmal ohne '"+word +
                                          "' sagen?", message["authorDetails"]["displayName"])
+                            else:
+                                print(wordFilter, word.lower())
 
                     def listenForSpam(items):
                         users = []
@@ -208,9 +222,9 @@ def main():
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
                                     strike(user["id"])
-                        for s in strikes:
-                            if strikes[s]["made"] < time.time()-30*60:
-                                del strikes[s]
+                    for s in strikes:
+                        if strikes[s]["made"] < time.time()-30*60:
+                            del strikes[s]
 
                     i = 0
                     for i in range(len(response["items"])-1, -1, -1):

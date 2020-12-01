@@ -1,6 +1,7 @@
 import urllib
 import json
 import datetime
+import math
 
 
 def command_xp(options):
@@ -52,8 +53,8 @@ def command_lieblingswaffe(options):
 
 
 def command_michi(options):
-    alter = datetime.date.today() - datetime.date(1998, 10, 29)
-    return "Michi ist {0} und studiert Maschinenbau im Master.".format(alter.days//365.25)
+    alter = datetime.date.today() - datetime.date(1997, 10, 29)
+    return "Michi ist {0} und studiert Maschinenbau im Master.".format(math.floor(alter.days/365.25))
 
 
 def command_reddit(options):
@@ -73,9 +74,9 @@ def command_spielstunden(options):
         "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=7359F5150A808259B6C38735D89B910A&format=json&steamid=76561198091960570"
     )
     jsonRes = json.loads(res.read())
-    spielstunden = "-1"
+    spielstunden = "-60"
     for game in jsonRes["response"]["games"]:
-        if game["appid"] == "326460":
+        if game["appid"] == 326460:
             spielstunden = game["playtime_forever"]
             break
     return("%.2f" % (int(spielstunden)/60.0))
@@ -123,6 +124,6 @@ def executeCommands(parentInputs):
         opt = {"streamage": parentInputs["streamAge"]}
         if len(msgParts) > 1:
             parentInputs["sendText"](commandNames[cmd](opt
-                                                       ), msgParts[1:])
+                                                       ), " ".join(msgParts[1:]))
         else:
             parentInputs["sendText"](commandNames[cmd](opt))
