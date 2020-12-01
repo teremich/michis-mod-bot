@@ -38,15 +38,29 @@ stream_youtube = googleapiclient.discovery.build(
 
 def getListen():
     toRet = {}
-    with open("listen.txt", "r+") as f:
+    with open("listen.txt", "r") as f:
+        for line in f:
+            splitter = line.find(":")
+            if line[-1] == "\n":
+                toRet[line[:splitter]] = line[splitter+1:-1]
+            else:
+                toRet[line[:splitter]] = line[splitter+1:]
+
+    if TESTRUN:
+        print(toRet)
+    return toRet
+
+
+def getFilter():
+    words = []
+    with open("filter.txt", "r") as f:
         for line in f:
             if line[-1] == "\n":
-                excludeNewLine = 1
+                words.append(line[:-1].lower())
             else:
-                excludeNewLine = 0
-            splitter = line.find(":")
-            toRet[line[:splitter]] = line[splitter+1:-excludeNewLine]
-    return toRet
+                words.append(line.lower())
+
+    return words
 
 
 def count(item, L):
@@ -58,6 +72,7 @@ def count(item, L):
 
 
 def main():
+    newestChatId = ""
     while True:
         # Searching for Livestream by User with below written channelId
 
@@ -69,10 +84,15 @@ def main():
             type="video"
         )
         hour = int(time.strftime("%H", time.localtime()))
-        if hour > 15 and hour < 23 or TESTRUN:
+        if hour > 14 and hour < 23 or TESTRUN:
             response = request.execute()
+            if TESTRUN:
+                print("searching for stream...")
+                print(response)
         else:
             response = {"items": []}
+        if TESTRUN:
+            print(hour)
         vidid = ""
         # Getting the VideoId or raising error if no livestream was found
         try:
@@ -90,9 +110,11 @@ def main():
             if len(response["items"]) < 1:
                 continue
             CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
+            STREAMAGE = response["items"][0]["snippet"]["publishedAt"]
             print(CHATID)
-            newestChatId = ""
             strikes = {}
+            activatorWords = getListen()
+            wordFilter = getFilter()
             while True:
                 try:
                     # Getting 2000 messages from youtube
@@ -108,7 +130,7 @@ def main():
 
                     def sendText(text, tag="NULL"):
                         if tag == "NULL":
-                            msgText = text[:200]
+                            msgText = str(text)[:200]
                         else:
                             msgText = "@{0} -> {1}".format(tag, text)[:200]
                         request = youtube.liveChatMessages().insert(
@@ -131,33 +153,41 @@ def main():
                                 "Could not write a message to Chat, trying to reconnect...")
 
                     def sendTimeout(channelId, duration):
-                        print(
-                            "sent timeout request with following parameters:", channelId, duration)
-                        request = youtube.liveChatBans().insert(
-                            part="snippet",
-                            body={
-                                "snippet": {
-                                    "type": "temporary",
-                                    "bannedUserDetails": {
-                                            "channelId": channelId
-                                    },
-                                    "liveChatId": CHATID,
-                                    "banDurationSeconds": duration
+                        try:
+                            print(
+                                "sent timeout request with following parameters:", channelId, duration)
+                            request = youtube.liveChatBans().insert(
+                                part="snippet",
+                                body={
+                                    "snippet": {
+                                        "type": "temporary",
+                                        "bannedUserDetails": {
+                                                "channelId": channelId
+                                        },
+                                        "liveChatId": CHATID,
+                                        "banDurationSeconds": duration
+                                    }
                                 }
-                            }
-                        )
-                        response = request.execute()
-                        print(response)
+                            )
+                            response = request.execute()
+                            print(response)
+                        except Exception:
+                            print("didnt work, probably mod or streamer")
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
-                        activatorWords = getListen()
                         for word in activatorWords:
                             if (word in message["snippet"]["textMessageDetails"]["messageText"]):
                                 sendText(activatorWords[word],
                                          message["authorDetails"]["displayName"])
 
-                    def strike(userid, strength):
+                    def strike(userid):
+                        if userid in strikes.keys():
+                            strikes[userid]["count"] += 1
+                        else:
+                            strikes[userid] = {
+                                "count": 1, "made": time.time()}
+                        strength = strikes[userid]["count"]
                         if strength == 1:
                             duration = 5
                         elif strength == 2:
@@ -165,6 +195,23 @@ def main():
                         else:
                             duration = 300
                         sendTimeout(userid, duration)
+
+                    def listenForFilter(message):
+                        messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
+                            " ")
+
+                        for word in messageWords:
+                            if TESTRUN:
+                                print(word)
+                            if word.lower() in wordFilter:
+                                if TESTRUN:
+                                    print("FOUND BAD WORD")
+                                userid = message["authorDetails"]["channelId"]
+                                strike(userid)
+                                sendText("Kannst du das nochmal ohne '"+word +
+                                         "' sagen?", message["authorDetails"]["displayName"])
+                            else:
+                                print(wordFilter, word.lower())
 
                     def listenForSpam(items):
                         users = []
@@ -179,16 +226,10 @@ def main():
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
-                                    if user["id"] in strikes.keys():
-                                        strikes[user["id"]]["count"] += 1
-                                    else:
-                                        strikes[user["id"]] = {
-                                            "count": 1, "made": time.time()}
-                                    strike(
-                                        user["id"], strikes[user["id"]]["count"])
-                        for s in strikes:
-                            if strikes[s]["made"] < time.time()-30*60:
-                                del strikes[s]
+                                    strike(user["id"])
+                    for s in strikes:
+                        if strikes[s]["made"] < time.time()-30*60:
+                            del strikes[s]
 
                     i = 0
                     for i in range(len(response["items"])-1, -1, -1):
@@ -198,11 +239,13 @@ def main():
                     listenForSpam(response["items"])
                     for j in range(i, len(response["items"])):
                         message = response["items"][j]
-                        # listenForFilter(message)
+                        listenForFilter(message)
                         listenForWords(message)
-                        executeCommands({"sendText": sendText}, message)
+                        executeCommands(
+                            {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
 
                     newestChatId = response["items"][-1]["id"]
+                    time.sleep(5)
                 except IndexError:
                     break
 

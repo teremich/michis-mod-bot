@@ -14,6 +14,7 @@ Things to do if you want to copy the code:
 -   Make a Youtube account for the bot, give it mod rights.
 -   Get 2 API client secret files from google (console.developers.google.com)
 -   name one "client_secret.json" and the other one "stream_client_secret.json"
+-   change the User ID in app.py to the streamers Youtube ID
 
 start with "python app.py"
 At start choose to log in via the bot's account.
