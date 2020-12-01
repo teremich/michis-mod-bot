@@ -40,6 +40,26 @@ def command_donation(options):
     return "https://www.tipeeestream.com/termpounator/donation"
 
 
+def command_filter(options):
+    # WARNING: If you type "!filter remove" and then a substring of a filtered word in chat, the filtered word will be removed!
+    toParse = options["message"].split(" ")
+    if toParse[1] == "add":
+        with open("filter.txt", "a", encoding="utf-8") as f:
+            f.write("\n" + toParse[2:])
+        return "successfully added '"+toParse[2:]+"' to the filter"
+    elif toParse[1] == "remove":
+        with open("filter.txt", "r+", encoding="utf-8") as f:
+            ret = "success fully removed "
+            for line in f:
+                if toParse[2:] in line:
+                    ret += line + ", "
+                    line = ""
+            return ret
+    else:
+        return "Error! Syntax for this command: !filter <add|remove> <expression>"
+    pass
+
+
 def command_godgays(options):
     return "Mein God Rays-Unlock gegen den Entwickler kChamp: https://www.youtube.com/watch?v=9ZxzMyzQ594&t=12s"
 
@@ -112,7 +132,7 @@ def command_name(options):
     pass
 
 
-commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
+commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!filter": command_filter, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
                 "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!tlou": command_tlou, "!turnier": command_turnier, "!updateconsole": command_updateConsole, "!xp": command_xp}
 
 
@@ -121,7 +141,8 @@ def executeCommands(parentInputs):
         " ")
     cmd = msgParts[0]
     if cmd in commandNames.keys():
-        opt = {"streamage": parentInputs["streamAge"]}
+        opt = {"streamage": parentInputs["streamAge"], "message": parentInputs["message"]
+               ["snippet"]["textMessageDetails"]["messageText"]}
         if len(msgParts) > 1:
             parentInputs["sendText"](commandNames[cmd](opt
                                                        ), " ".join(msgParts[1:]))

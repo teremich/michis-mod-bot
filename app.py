@@ -8,7 +8,7 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = False
+TESTRUN = True
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -38,7 +38,7 @@ stream_youtube = googleapiclient.discovery.build(
 
 def getListen():
     toRet = {}
-    with open("listen.txt", "r") as f:
+    with open("listen.txt", "r", encoding="utf-8") as f:
         for line in f:
             splitter = line.find(":")
             if line[-1] == "\n":
@@ -53,8 +53,10 @@ def getListen():
 
 def getFilter():
     words = []
-    with open("filter.txt", "r") as f:
+    with open("filter.txt", "r", encoding="utf-8") as f:
         for line in f:
+            if line == "\n":
+                continue
             if line[-1] == "\n":
                 words.append(line[:-1].lower())
             else:
@@ -246,7 +248,7 @@ def main():
 
                     newestChatId = response["items"][-1]["id"]
                     time.sleep(5)
-                except IndexError:
+                except (IndexError, Exception):
                     break
 
 
