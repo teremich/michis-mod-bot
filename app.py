@@ -40,12 +40,14 @@ def getListen():
     toRet = {}
     with open("listen.txt", "r") as f:
         for line in f:
-            if line[-1] == "\n":
-                excludeNewLine = 1
-            else:
-                excludeNewLine = 0
             splitter = line.find(":")
-            toRet[line[:splitter]] = line[splitter+1:-excludeNewLine]
+            if line[-1] == "\n":
+                toRet[line[:splitter]] = line[splitter+1:-1]
+            else:
+                toRet[line[:splitter]] = line[splitter+1:]
+
+    if TESTRUN:
+        print(toRet)
     return toRet
 
 
@@ -54,10 +56,10 @@ def getFilter():
     with open("filter.txt", "r") as f:
         for line in f:
             if line[-1] == "\n":
-                excludeNewLine = 1
+                words.append(line[:-1].lower())
             else:
-                excludeNewLine = 0
-            words.append(line[:-excludeNewLine].lower())
+                words.append(line.lower())
+
     return words
 
 
