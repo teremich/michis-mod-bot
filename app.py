@@ -130,6 +130,7 @@ def main():
                 continue
             CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
             STREAMAGE = response["items"][0]["snippet"]["publishedAt"]
+            print(STREAMAGE)
             print(CHATID)
             strikes = {}
             activatorWords = getListen()
@@ -245,8 +246,6 @@ def main():
                                            "' sagen?", "Wir sprechen nicht mehr über "+word, ]
                                 sendText(rndFromList(answers),
                                          message["authorDetails"]["displayName"])
-                            else:
-                                print(wordFilter, word.lower())
 
                     def listenForSpam(items):
                         users = []
