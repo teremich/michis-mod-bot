@@ -1,6 +1,7 @@
 import os
 import time
 import math
+import datetime
 
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -121,7 +122,7 @@ def main():
             time.sleep(60*5)
         else:
             # Getting id for the chat of the livestream
-            request = youtube.videos().list(
+            request = stream_youtube.videos().list(
                 part="snippet,contentDetails,statistics,liveStreamingDetails",
                 id=vidid
             )
@@ -130,7 +131,9 @@ def main():
                 continue
             CHATID = response["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
             STREAMAGE = response["items"][0]["snippet"]["publishedAt"]
-            print(STREAMAGE)
+            STREAMAGE = datetime.datetime.strptime(
+                STREAMAGE, "%Y-%m-%dT%H:%M:%SZ")
+            print(STREAMAGE, type(STREAMAGE))
             print(CHATID)
             strikes = {}
             activatorWords = getListen()
