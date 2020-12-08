@@ -1,5 +1,6 @@
 import os
 import time
+import math
 
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -45,9 +46,6 @@ def getListen():
                 toRet[line[:splitter]] = line[splitter+1:-1]
             else:
                 toRet[line[:splitter]] = line[splitter+1:]
-
-    if TESTRUN:
-        print(toRet)
     return toRet
 
 
@@ -73,24 +71,44 @@ def count(item, L):
     return c
 
 
+def rndFromList(L):
+    max = len(L)
+    range = math.random()*max
+    index = math.floor(range)
+    return L[index]
+
+
 def main():
-    newestChatId = ""
+    newestChatId = "LCC.CjgKDQoLc1Q4OF9EQWpQNm8qJwoYVUNHRFRvMWljQTFMVzU2d1dHSVE5R1FBEgtzVDg4X0RBalA2bxI6ChpDS0xENnZIdHJlMENGYVhsZ2dvZFVHWU1nQRIcQ0piM2llTExyZTBDRlEzbHRBb2RLc1VMQVEzNQ"
     while True:
         # Searching for Livestream by User with below written channelId
 
         request = stream_youtube.search().list(
             part="snippet",
-            channelId="UCGDTo1icA1LW56wWGIQ9GQA",
+            channelId="UCvlsCHPqjj4Ydanpp_QZeOA",
             eventType="live",
             maxResults=1,
             type="video"
         )
         hour = int(time.strftime("%H", time.localtime()))
         if hour > 14 and hour < 23 or TESTRUN:
-            response = request.execute()
-            if TESTRUN:
-                print("searching for stream...")
-                print(response)
+            try:
+                response = request.execute()
+                if TESTRUN:
+                    print("searching for stream...")
+                    print(response)
+            except Exception:
+                print("no more power to search for a stream using other method")
+                if TESTRUN:
+                    response = {
+                        "items": [
+                            {
+                                "id": {
+                                    "videoId": input("pls give me a vidid")
+                                }
+                            }
+                        ]
+                    }
         else:
             response = {"items": []}
         if TESTRUN:
@@ -127,8 +145,11 @@ def main():
                     )
                     response = request.execute()
                     if "error" in response.keys():
+                        print("Could not read Chat Messages, trying to reconnect...")
                         raise IndexError(
                             "Could not read Chat Messages, trying to reconnect...")
+                    if TESTRUN:
+                        print("only defs after here")
 
                     def sendText(text, tag="NULL"):
                         if tag == "NULL":
@@ -151,6 +172,8 @@ def main():
                         if TESTRUN:
                             print(response)
                         if "error" in response.keys():
+                            print(
+                                "Could not write a message to Chat, trying to reconnect...")
                             raise IndexError(
                                 "Could not write a message to Chat, trying to reconnect...")
 
@@ -174,6 +197,8 @@ def main():
                             response = request.execute()
                             print(response)
                         except Exception:
+                            sendText(
+                                "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
 
                     def listenForWords(message):
@@ -210,8 +235,10 @@ def main():
                                     print("FOUND BAD WORD")
                                 userid = message["authorDetails"]["channelId"]
                                 strike(userid)
-                                sendText("Kannst du das nochmal ohne '"+word +
-                                         "' sagen?", message["authorDetails"]["displayName"])
+                                answers = ["Kannst du das nochmal ohne '"+word +
+                                           "' sagen?", "Wir sprechen nicht mehr über "+word, ]
+                                sendText(rndFromList(answers),
+                                         message["authorDetails"]["displayName"])
                             else:
                                 print(wordFilter, word.lower())
 
@@ -229,6 +256,8 @@ def main():
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
                                     strike(user["id"])
+                    if TESTRUN:
+                        print("the rest should work fine")
                     for s in strikes:
                         if strikes[s]["made"] < time.time()-30*60:
                             del strikes[s]
@@ -238,15 +267,18 @@ def main():
                         if response["items"][i]["id"] == newestChatId:
                             i += 1
                             break
-                    listenForSpam(response["items"])
-                    for j in range(i, len(response["items"])):
-                        message = response["items"][j]
-                        listenForFilter(message)
-                        listenForWords(message)
-                        executeCommands(
-                            {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
+                    if i < len(response["items"]):
+                        listenForSpam(response["items"])
+                        for j in range(i, len(response["items"])):
+                            message = response["items"][j]
+                            listenForFilter(message)
+                            listenForWords(message)
+                            executeCommands(
+                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
 
-                    newestChatId = response["items"][-1]["id"]
+                        newestChatId = response["items"][-1]["id"]
+                    if TESTRUN:
+                        print("finished at least once")
                     time.sleep(5)
                 except (IndexError, Exception):
                     break
