@@ -126,8 +126,8 @@ def command_updateConsole(options):
 
 
 def command_uptime(options):
-    print(options["streamAge"]-datetime.datetime.now())
-    return str(options["streamAge"]-datetime.datetime.now())
+    print(datetime.datetime.now()-options["streamAge"])
+    return str(datetime.datetime.now()-sa).split(".")[0]
 
 # PRESET
 
