@@ -145,7 +145,7 @@ def executeCommands(parentInputs):
         " ")
     cmd = msgParts[0]
     if cmd in commandNames.keys():
-        opt = {"streamage": parentInputs["streamAge"], "message": parentInputs["message"]
+        opt = {"streamAge": parentInputs["streamAge"], "message": parentInputs["message"]
                ["snippet"]["textMessageDetails"]["messageText"]}
         if len(msgParts) > 1:
             parentInputs["sendText"](
