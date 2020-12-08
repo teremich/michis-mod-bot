@@ -186,6 +186,7 @@ def main():
                                 "Could not write a message to Chat, trying to reconnect...")
                             raise IndexError(
                                 "Could not write a message to Chat, trying to reconnect...")
+                        return response["id"]
 
                     def sendTimeout(channelId, duration):
                         try:
@@ -207,16 +208,16 @@ def main():
                             response = request.execute()
                             print(response)
                         except Exception:
-                            sendText(
+                            newestChatId = sendText(
                                 "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
                         for word in activatorWords:
-                            if (word in message["snippet"]["textMessageDetails"]["messageText"]):
-                                sendText(activatorWords[word],
-                                         message["authorDetails"]["displayName"])
+                            if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
+                                newestChatId = sendText(activatorWords[word],
+                                                        message["authorDetails"]["displayName"])
 
                     def strike(userid):
                         if userid in strikes.keys():
@@ -247,8 +248,8 @@ def main():
                                 strike(userid)
                                 answers = ["Kannst du das nochmal ohne '"+word +
                                            "' sagen?", "Wir sprechen nicht mehr über "+word, ]
-                                sendText(rndFromList(answers),
-                                         message["authorDetails"]["displayName"])
+                                newestChatId = sendText(rndFromList(answers),
+                                                        message["authorDetails"]["displayName"])
 
                     def listenForSpam(items):
                         users = []
