@@ -9,7 +9,7 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = True
+TESTRUN = False
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -79,13 +79,12 @@ def rndFromList(L):
 
 
 def main():
-    newestChatId = "LCC.CjgKDQoLc1Q4OF9EQWpQNm8qJwoYVUNHRFRvMWljQTFMVzU2d1dHSVE5R1FBEgtzVDg4X0RBalA2bxI6ChpDS0xENnZIdHJlMENGYVhsZ2dvZFVHWU1nQRIcQ0piM2llTExyZTBDRlEzbHRBb2RLc1VMQVEzNQ"
     while True:
         # Searching for Livestream by User with below written channelId
 
         request = stream_youtube.search().list(
             part="snippet",
-            channelId="UCvlsCHPqjj4Ydanpp_QZeOA",
+            channelId="UCGDTo1icA1LW56wWGIQ9GQA",
             eventType="live",
             maxResults=1,
             type="video"
@@ -135,6 +134,13 @@ def main():
             strikes = {}
             activatorWords = getListen()
             wordFilter = getFilter()
+            request = stream_youtube.liveChatMessages().list(
+                liveChatId=CHATID,
+                part="id,snippet,authorDetails",
+                maxResults=2000
+            )
+            response = request.execute()
+            newestChatId = response["items"][-1]["id"]
             while True:
                 try:
                     # Getting 2000 messages from youtube
