@@ -277,6 +277,8 @@ def main():
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
+                                    sendText(
+                                        "wer auch immer '"+msg+"' mehr als 3 mal gesagt hat, soll still sein!")
                                     strike(user["id"])
                                     user["msgs"] = []
                                     break
