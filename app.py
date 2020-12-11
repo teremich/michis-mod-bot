@@ -10,7 +10,7 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = False
+TESTRUN = True
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -85,7 +85,7 @@ def main():
 
         request = stream_youtube.search().list(
             part="snippet",
-            channelId="UCGDTo1icA1LW56wWGIQ9GQA",
+            channelId="UCvlsCHPqjj4Ydanpp_QZeOA",
             eventType="live",
             maxResults=1,
             type="video"
@@ -111,8 +111,6 @@ def main():
                     }
         else:
             response = {"items": []}
-        if TESTRUN:
-            print(hour)
         vidid = ""
         # Getting the VideoId or raising error if no livestream was found
         try:
@@ -133,7 +131,6 @@ def main():
             STREAMAGE = response["items"][0]["snippet"]["publishedAt"]
             STREAMAGE = datetime.datetime.strptime(
                 STREAMAGE, "%Y-%m-%dT%H:%M:%SZ")
-            print(STREAMAGE, type(STREAMAGE))
             print(CHATID)
             strikes = {}
             activatorWords = getListen()
@@ -144,7 +141,9 @@ def main():
                 maxResults=2000
             )
             response = request.execute()
-            newestChatId = response["items"][-1]["id"]
+            global newestChatId
+            if len(response["items"]) > 0:
+                newestChatId = response["items"][-1]["id"]
             while True:
                 try:
                     # Getting 2000 messages from youtube
@@ -158,8 +157,6 @@ def main():
                         print("Could not read Chat Messages, trying to reconnect...")
                         raise IndexError(
                             "Could not read Chat Messages, trying to reconnect...")
-                    if TESTRUN:
-                        print("only defs after here")
 
                     def sendText(text, tag="NULL"):
                         if tag == "NULL":
@@ -208,6 +205,7 @@ def main():
                             response = request.execute()
                             print(response)
                         except Exception:
+                            global newestChatId
                             newestChatId = sendText(
                                 "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
@@ -216,6 +214,7 @@ def main():
                         # Define words to listen for and the responses to give
                         for word in activatorWords:
                             if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
+                                global newestChatId
                                 newestChatId = sendText(activatorWords[word],
                                                         message["authorDetails"]["displayName"])
 
@@ -240,6 +239,7 @@ def main():
                             strike(message["authorDetails"]["channelId"])
                             answers = [
                                 "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!"]
+                            global newestChatId
                             newestChatId = sendText(rndFromList(answers),
                                                     message["authorDetails"]["displayName"])
 
@@ -248,8 +248,6 @@ def main():
                             " ")
 
                         for word in messageWords:
-                            if TESTRUN:
-                                print(word)
                             if word.lower() in wordFilter:
                                 if TESTRUN:
                                     print("FOUND BAD WORD")
@@ -257,6 +255,7 @@ def main():
                                 strike(userid)
                                 answers = ["Kannst du das nochmal ohne '"+word +
                                            "' sagen?", "Wir sprechen nicht mehr über "+word, ]
+                                global newestChatId
                                 newestChatId = sendText(rndFromList(answers),
                                                         message["authorDetails"]["displayName"])
 
@@ -268,36 +267,38 @@ def main():
                                     userObj["msgs"].append(
                                         msgRes["snippet"]["textMessageDetails"]["messageText"])
                             else:
-                                users.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
-                                    msgRes["snippet"]["textMessageDetails"]["messageText"]]})
+                                if msgRes["authorDetails"]["isChatModerator"] or msgRes["authorDetails"]["isChatOwner"]:
+                                    users.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
+                                        msgRes["snippet"]["textMessageDetails"]["messageText"]]})
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
                                     strike(user["id"])
-                    if TESTRUN:
-                        print("the rest should work fine")
+
                     for s in strikes:
                         if strikes[s]["made"] < time.time()-30*60:
                             del strikes[s]
 
                     i = 0
+                    if TESTRUN:
+                        print(newestChatId)
                     for i in range(len(response["items"])-1, -1, -1):
                         if response["items"][i]["id"] == newestChatId:
+                            newestChatId = response["items"][-1]["id"]
                             i += 1
                             break
                     if i < len(response["items"]):
                         listenForSpam(response["items"])
-                        newestChatId = response["items"][-1]["id"]
                         for j in range(i, len(response["items"])):
                             message = response["items"][j]
+                            if TESTRUN:
+                                print(message)
                             listenForCaps(message)
                             listenForFilter(message)
                             listenForWords(message)
                             executeCommands(
                                 {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
 
-                    if TESTRUN:
-                        print("finished at least once")
                     time.sleep(5)
                 except (IndexError, Exception):
                     break
