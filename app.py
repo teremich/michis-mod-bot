@@ -204,11 +204,12 @@ def main():
                             )
                             response = request.execute()
                             print(response)
-                        except Exception:
+                        except Exception as e:
                             global newestChatId
                             newestChatId = sendText(
                                 "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
+                            print(e)
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
@@ -267,7 +268,7 @@ def main():
                                     userObj["msgs"].append(
                                         msgRes["snippet"]["textMessageDetails"]["messageText"])
                             else:
-                                if msgRes["authorDetails"]["isChatModerator"] or msgRes["authorDetails"]["isChatOwner"]:
+                                if not msgRes["authorDetails"]["isChatModerator"] and not msgRes["authorDetails"]["isChatOwner"]:
                                     users.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
                                         msgRes["snippet"]["textMessageDetails"]["messageText"]]})
                         for user in users:
