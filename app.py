@@ -206,12 +206,14 @@ def main():
                             )
                             response = request.execute()
                             print(response)
+                            return True
                         except Exception as e:
                             global newestChatId
                             newestChatId = sendText(
                                 "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
                             print(e)
+                            return False
 
                     def listenForWords(message):
                         # Define words to listen for and the responses to give
@@ -239,6 +241,7 @@ def main():
                     def listenForCaps(message):
                         msg = message["snippet"]["textMessageDetails"]["messageText"]
                         if (msg == msg.upper() and len(msg) > 5):
+                            print("strike reason: ", msg)
                             strike(message["authorDetails"]["channelId"])
                             answers = [
                                 "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!"]
@@ -255,6 +258,7 @@ def main():
                                 if TESTRUN:
                                     print("FOUND BAD WORD")
                                 userid = message["authorDetails"]["channelId"]
+                                print("strike reason: ", word)
                                 strike(userid)
                                 answers = ["Kannst du das nochmal ohne '"+word +
                                            "' sagen?", "Wir sprechen nicht mehr über "+word, ]
@@ -279,10 +283,12 @@ def main():
                                 if count(msg, user["msgs"]) > 3:
                                     sendText(
                                         "wer auch immer '"+msg+"' mehr als 3 mal gesagt hat, soll still sein!")
+                                    print("strike reason: ", user["msgs"])
                                     strike(user["id"])
                                     user["msgs"] = []
                                     break
 
+                    print(strikes)
                     for s in strikes:
                         if strikes[s]["made"] < time.time()-30*60:
                             del strikes[s]

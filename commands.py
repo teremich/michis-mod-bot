@@ -77,7 +77,7 @@ def command_lieblingswaffe(options):
 
 def command_michi(options):
     alter = datetime.date.today() - datetime.date(1997, 10, 29)
-    return "Michi ist {0} und studiert Maschinenbau im Master. Mehr infos zum studium findet ihr in der Uni-Talk playlist".format(math.floor(alter.days/365.25))
+    return "Michi ist {0} und studiert Maschinenbau im Master. Mehr Infos zum Studium findet ihr in der Uni-Talk Playlist".format(math.floor(alter.days/365.25))
 
 
 def command_reddit(options):
