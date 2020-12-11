@@ -238,6 +238,10 @@ def main():
                         msg = message["snippet"]["textMessageDetails"]["messageText"]
                         if (msg == msg.upper() and len(msg) > 5):
                             strike(message["authorDetails"]["channelId"])
+                            answers = [
+                                "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!"]
+                            newestChatId = sendText(rndFromList(answers),
+                                                    message["authorDetails"]["displayName"])
 
                     def listenForFilter(message):
                         messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
