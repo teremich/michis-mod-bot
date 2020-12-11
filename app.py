@@ -10,7 +10,7 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = False
+TESTRUN = True
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -244,7 +244,7 @@ def main():
                             print("strike reason: ", msg)
                             strike(message["authorDetails"]["channelId"])
                             answers = [
-                                "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!"]
+                                "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!", "kleine Buchstaben = Großes Ding, GROẞE BUCHSTABEN = ...naja, kannste dir selber denken", "Wir verstehen dich auch, wenn du nicht RUMBRÜLLST!"]
                             global newestChatId
                             newestChatId = sendText(rndFromList(answers),
                                                     message["authorDetails"]["displayName"])
@@ -261,7 +261,7 @@ def main():
                                 print("strike reason: ", word)
                                 strike(userid)
                                 answers = ["Kannst du das nochmal ohne '"+word +
-                                           "' sagen?", "Wir sprechen nicht mehr über "+word, ]
+                                           "' sagen?", "Wir sprechen nicht mehr über "+word]
                                 global newestChatId
                                 newestChatId = sendText(rndFromList(answers),
                                                         message["authorDetails"]["displayName"])
