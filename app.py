@@ -234,6 +234,11 @@ def main():
                             duration = 300
                         sendTimeout(userid, duration)
 
+                    def listenForCaps(message):
+                        msg = message["snippet"]["textMessageDetails"]["messageText"]
+                        if (msg == msg.upper() and len(msg) > 5):
+                            strike(message["authorDetails"]["channelId"])
+
                     def listenForFilter(message):
                         messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
                             " ")
@@ -280,6 +285,7 @@ def main():
                         listenForSpam(response["items"])
                         for j in range(i, len(response["items"])):
                             message = response["items"][j]
+                            listenForCaps(message)
                             listenForFilter(message)
                             listenForWords(message)
                             executeCommands(
