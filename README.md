@@ -1,6 +1,6 @@
 # michis-mod-bot
 
-This is a youtube livestream moderation bot specifically designed for "Der Michi".
+This is a youtube livestream moderation bot specifically designed for "Der Michi" (youtube.com/channel/UCGDTo1icA1LW56wWGIQ9GQA).
 
 What to install:
 
