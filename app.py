@@ -133,6 +133,8 @@ def main():
                 STREAMAGE, "%Y-%m-%dT%H:%M:%SZ")
             print(CHATID)
             strikes = {}
+            global users
+            users = []
             activatorWords = getListen()
             wordFilter = getFilter()
             request = stream_youtube.liveChatMessages().list(
@@ -260,21 +262,24 @@ def main():
                                 newestChatId = sendText(rndFromList(answers),
                                                         message["authorDetails"]["displayName"])
 
-                    def listenForSpam(items):
-                        users = []
-                        for msgRes in items:
-                            for userObj in users:
-                                if userObj["id"] == msgRes["authorDetails"]["channelId"]:
-                                    userObj["msgs"].append(
-                                        msgRes["snippet"]["textMessageDetails"]["messageText"])
-                            else:
-                                if not msgRes["authorDetails"]["isChatModerator"] and not msgRes["authorDetails"]["isChatOwner"]:
-                                    users.append({"id": msgRes["authorDetails"]["channelId"], "msgs": [
-                                        msgRes["snippet"]["textMessageDetails"]["messageText"]]})
+                    def listenForSpam(message):
+                        global users
+                        for userObj in users:
+                            if userObj["id"] == message["authorDetails"]["channelId"]:
+                                userObj["msgs"].append(
+                                    message["snippet"]["textMessageDetails"]["messageText"])
+                                if len(userObj["msgs"]) > 8:
+                                    userObj["msgs"] = userObj["msgs"][-8:]
+                        else:
+                            if not message["authorDetails"]["isChatModerator"] and not message["authorDetails"]["isChatOwner"]:
+                                users.append({"id": message["authorDetails"]["channelId"], "msgs": [
+                                    message["snippet"]["textMessageDetails"]["messageText"]]})
                         for user in users:
                             for msg in user["msgs"]:
                                 if count(msg, user["msgs"]) > 3:
                                     strike(user["id"])
+                                    user["msgs"] = []
+                                    break
 
                     for s in strikes:
                         if strikes[s]["made"] < time.time()-30*60:
@@ -289,11 +294,11 @@ def main():
                             i += 1
                             break
                     if i < len(response["items"]):
-                        listenForSpam(response["items"])
                         for j in range(i, len(response["items"])):
                             message = response["items"][j]
                             if TESTRUN:
                                 print(message)
+                            listenForSpam(message)
                             listenForCaps(message)
                             listenForFilter(message)
                             listenForWords(message)
