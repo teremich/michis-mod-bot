@@ -287,6 +287,7 @@ def main():
                             break
                     if i < len(response["items"]):
                         listenForSpam(response["items"])
+                        newestChatId = response["items"][-1]["id"]
                         for j in range(i, len(response["items"])):
                             message = response["items"][j]
                             listenForCaps(message)
@@ -295,7 +296,6 @@ def main():
                             executeCommands(
                                 {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
 
-                        newestChatId = response["items"][-1]["id"]
                     if TESTRUN:
                         print("finished at least once")
                     time.sleep(5)
