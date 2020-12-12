@@ -113,6 +113,12 @@ def command_sub(options):
     return "Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8"
 
 
+def command_timemeout(options):
+    print("strike reason: command_timemeout")
+    options["strike"](options["userId"])
+    return "Du wolltest es so!"
+
+
 def command_tlou(options):
     return "The Last of Us II ist der direkte Nachfolger vom ersten Teil und setzt die Story fort. In dieser postapokalyptischen Welt kämpfen wir gegen Infizierte und Hunter, die uns das Leben zur Hölle machen."
 
@@ -137,7 +143,7 @@ def command_name(options):
 
 
 commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!filter": command_name, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
-                "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!tlou": command_tlou, "!turnier": command_turnier, "!updateconsole": command_updateConsole, "!uptime": command_uptime, "!xp": command_xp}
+                "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!timemeout": command_timemeout, "!tlou": command_tlou, "!turnier": command_turnier, "!updateconsole": command_updateConsole, "!uptime": command_uptime, "!xp": command_xp}
 
 
 def executeCommands(parentInputs):
@@ -146,7 +152,7 @@ def executeCommands(parentInputs):
     cmd = msgParts[0]
     if cmd in commandNames.keys():
         opt = {"streamAge": parentInputs["streamAge"], "message": parentInputs["message"]
-               ["snippet"]["textMessageDetails"]["messageText"]}
+               ["snippet"]["textMessageDetails"]["messageText"], "strike": parentInputs["strike"], "userId": parentInputs["message"]["authorDetails"]["channelId"]}
         if len(msgParts) > 1:
             parentInputs["sendText"](
                 commandNames[cmd](opt), " ".join(msgParts[1:]))

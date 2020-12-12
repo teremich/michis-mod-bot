@@ -10,7 +10,11 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = False
+TESTRUN = True
+# This should be the youtube channel id of your streamer
+STREAMERID = "UCGDTo1icA1LW56wWGIQ9GQA"
+if TESTRUN:
+    STREAMERID = "UCvlsCHPqjj4Ydanpp_QZeOA"
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -85,7 +89,7 @@ def main():
 
         request = stream_youtube.search().list(
             part="snippet",
-            channelId="UCGDTo1icA1LW56wWGIQ9GQA",
+            channelId=STREAMERID,
             eventType="live",
             maxResults=1,
             type="video"
@@ -146,15 +150,19 @@ def main():
             global newestChatId
             if len(response["items"]) > 0:
                 newestChatId = response["items"][-1]["id"]
+            else:
+                print(len(response["items"]))
             while True:
                 try:
                     # Getting 2000 messages from youtube
+                    print("searching again for messages")
                     request = youtube.liveChatMessages().list(
                         liveChatId=CHATID,
                         part="id,snippet,authorDetails",
                         maxResults=2000
                     )
                     response = request.execute()
+                    print(len(response["items"]))
                     if "error" in response.keys():
                         print("Could not read Chat Messages, trying to reconnect...")
                         raise IndexError(
@@ -242,12 +250,12 @@ def main():
                         msg = message["snippet"]["textMessageDetails"]["messageText"]
                         if (msg == msg.upper() and len(msg) > 5):
                             print("strike reason: ", msg)
-                            strike(message["authorDetails"]["channelId"])
                             answers = [
                                 "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!", "kleine Buchstaben = Großes Ding, GROẞE BUCHSTABEN = ...naja, kannste dir selber denken", "Wir verstehen dich auch, wenn du nicht RUMBRÜLLST!"]
                             global newestChatId
                             newestChatId = sendText(rndFromList(answers),
                                                     message["authorDetails"]["displayName"])
+                            strike(message["authorDetails"]["channelId"])
 
                     def listenForFilter(message):
                         messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
@@ -259,12 +267,12 @@ def main():
                                     print("FOUND BAD WORD")
                                 userid = message["authorDetails"]["channelId"]
                                 print("strike reason: ", word)
-                                strike(userid)
                                 answers = ["Kannst du das nochmal ohne '"+word +
                                            "' sagen?", "Wir sprechen nicht mehr über "+word]
                                 global newestChatId
                                 newestChatId = sendText(rndFromList(answers),
                                                         message["authorDetails"]["displayName"])
+                                strike(userid)
 
                     def listenForSpam(message):
                         global users
@@ -311,10 +319,11 @@ def main():
                             listenForFilter(message)
                             listenForWords(message)
                             executeCommands(
-                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
+                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message, "strike": strike})
 
                     time.sleep(5)
                 except (IndexError, Exception):
+                    print()
                     break
 
 
