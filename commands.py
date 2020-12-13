@@ -18,14 +18,14 @@ def command_xp(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> "+str(xp)
     else:
-        return options["message"].split(" ")[1:]+" -> "+str(xp)
+        return " ".join(options["message"].split(" ")[1:])+" -> "+str(xp)
 
 
 def command_hunad(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi hat 577 Stunden für Level 100 und 626 Stunden für 1M XP gebraucht."
     else:
-        return options["message"].split(" ")[1:]+" -> Michi hat 577 Stunden für Level 100 und 626 Stunden für 1M XP gebraucht."
+        return " ".join(options["message"].split(" ")[1:])+" -> Michi hat 577 Stunden für Level 100 und 626 Stunden für 1M XP gebraucht."
 
 
 def command_afterstream(options):
@@ -36,7 +36,7 @@ def command_crossplay(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> kChamp sagt im Wortlaut: Unfortunately, crossplay isn't supported because we will be updating the game with different content and at different rates."
     else:
-        return options["message"].split(" ")[1:]+" -> kChamp sagt im Wortlaut: Unfortunately, crossplay isn't supported because we will be updating the game with different content and at different rates."
+        return " ".join(options["message"].split(" ")[1:])+" -> kChamp sagt im Wortlaut: Unfortunately, crossplay isn't supported because we will be updating the game with different content and at different rates."
 
 
 def command_debug(options):
@@ -47,14 +47,14 @@ def command_discord(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://discord.gg/Afwxq8Y"
     else:
-        return options["message"].split(" ")[1:]+" -> https://discord.gg/Afwxq8Y"
+        return " ".join(options["message"].split(" ")[1:])+" -> https://discord.gg/Afwxq8Y"
 
 
 def command_donation(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://www.tipeeestream.com/termpounator/donation"
     else:
-        return options["message"].split(" ")[1:]+" -> https://www.tipeeestream.com/termpounator/donation"
+        return " ".join(options["message"].split(" ")[1:])+" -> https://www.tipeeestream.com/termpounator/donation"
 
 
 def command_filter(options):
@@ -63,15 +63,15 @@ def command_filter(options):
     print(toParse, options)
     if toParse[1] == "add" and options["isMod"]:
         with open("filter.txt", "a", encoding="utf-8") as f:
-            f.write("\n" + toParse[2:])
-        return "successfully added '"+toParse[2:]+"' to the filter"
+            f.write("\n" + " ".join(toParse[2:]))
+        return "successfully added '"+" ".join(toParse[2:])+"' to the filter"
     elif toParse[1] == "remove" and options["isMod"]:
         print("trying to remove something")
         with open("filter.txt", "r+", encoding="utf-8") as f:
             ret = "successfully removed "
             for line in f:
                 print(line)
-                if toParse[2:] in line:
+                if " ".join(toParse[2:]) in line:
                     ret += line + ", "
                     line = ""
             return ret
@@ -85,21 +85,21 @@ def command_godgays(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Mein God Rays-Unlock gegen den Entwickler kChamp: https://www.youtube.com/watch?v=9ZxzMyzQ594&t=12s"
     else:
-        return options["message"].split(" ")[1:]+" -> Mein God Rays-Unlock gegen den Entwickler kChamp: https://www.youtube.com/watch?v=9ZxzMyzQ594&t=12s"
+        return " ".join(options["message"].split(" ")[1:])+" -> Mein God Rays-Unlock gegen den Entwickler kChamp: https://www.youtube.com/watch?v=9ZxzMyzQ594&t=12s"
 
 
 def command_konsole(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
     else:
-        return options["message"].split(" ")[1:]+" -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
+        return " ".join(options["message"].split(" ")[1:])+" -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
 
 
 def command_lieblingswaffe(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Aufgrund der extremen Variabilität von Spielmodi, Distanz und Position hat Michi nicht DIE eine Lieblingswaffe. Jede Waffe kann in einer bestimmten Situation gut sein."
     else:
-        return options["message"].split(" ")[1:]+" -> Aufgrund der extremen Variabilität von Spielmodi, Distanz und Position hat Michi nicht DIE eine Lieblingswaffe. Jede Waffe kann in einer bestimmten Situation gut sein."
+        return " ".join(options["message"].split(" ")[1:])+" -> Aufgrund der extremen Variabilität von Spielmodi, Distanz und Position hat Michi nicht DIE eine Lieblingswaffe. Jede Waffe kann in einer bestimmten Situation gut sein."
 
 
 def command_listen(options):
@@ -108,13 +108,13 @@ def command_listen(options):
     print(toParse)
     if toParse[1] == "add" and options["isMod"]:
         with open("listen.txt", "a", encoding="utf-8") as f:
-            f.write("\n" + toParse[2] + ":" + toParse[3:])
-        return "successfully added '"+toParse[2:]+"' to the listen list"
+            f.write("\n" + toParse[2] + ":" + " ".join(toParse[3:]))
+        return "successfully added '"+" ".join(toParse[2:])+"' to the listen list"
     elif toParse[1] == "remove" and options["isMod"]:
         with open("listen.txt", "r+", encoding="utf-8") as f:
             ret = "successfully removed "
             for line in f:
-                if toParse[2:] in line.split(":")[0]:
+                if " ".join(toParse[2:]) in line.split(":")[0]:
                     ret += line.split(":")[0] + ", "
                     line = ""
             return ret
@@ -127,14 +127,14 @@ def command_michi(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi ist {0} und studiert Maschinenbau im Master. Mehr Infos zum Studium findet ihr in der Uni-Talk Playlist".format(math.floor(alter.days/365.25))
     else:
-        return options["message"].split(" ")[1:]+" -> Michi ist {0} und studiert Maschinenbau im Master. Mehr Infos zum Studium findet ihr in der Uni-Talk Playlist".format(math.floor(alter.days/365.25))
+        return " ".join(options["message"].split(" ")[1:])+" -> Michi ist {0} und studiert Maschinenbau im Master. Mehr Infos zum Studium findet ihr in der Uni-Talk Playlist".format(math.floor(alter.days/365.25))
 
 
 def command_reddit(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://www.reddit.com/r/dermichi"
     else:
-        return options["message"].split(" ")[1:]+" -> https://www.reddit.com/r/dermichi"
+        return " ".join(options["message"].split(" ")[1:])+" -> https://www.reddit.com/r/dermichi"
 
 
 def command_roadto(options):
@@ -149,14 +149,14 @@ def command_roadto(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> "+str(2500000-int(xp))
     else:
-        return options["message"].split(" ")[1:]+" -> "+str(2500000-int(xp))
+        return " ".join(options["message"].split(" ")[1:])+" -> "+str(2500000-int(xp))
 
 
 def command_sew(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Hier findest du Michi's Shoot Every Weapon: https://youtube.com/playlist?list=PLRL2wVgCQQsvNAPoxHWNiXjz5J6FONlgA"
     else:
-        return options["message"].split(" ")[1:]+" -> Hier findest du Michi's Shoot Every Weapon: https://youtube.com/playlist?list=PLRL2wVgCQQsvNAPoxHWNiXjz5J6FONlgA"
+        return " ".join(options["message"].split(" ")[1:])+" -> Hier findest du Michi's Shoot Every Weapon: https://youtube.com/playlist?list=PLRL2wVgCQQsvNAPoxHWNiXjz5J6FONlgA"
 
 
 def command_spielstunden(options):
@@ -172,21 +172,21 @@ def command_spielstunden(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + (" -> %.2f" % (int(spielstunden)/60.0))
     else:
-        return options["message"].split(" ")[1:]+(" -> %.2f" % (int(spielstunden)/60.0))
+        return " ".join(options["message"].split(" ")[1:])+(" -> %.2f" % (int(spielstunden)/60.0))
 
 
 def command_statistik(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://docs.google.com/spreadsheets/d/1mVHx01Px69b0l5vRhVRKkamsZ1aSNR9CA7sOzKt0FDQ/edit?usp=sharing SSL Statistik von Michi"
     else:
-        return options["message"].split(" ")[1:]+" -> https://docs.google.com/spreadsheets/d/1mVHx01Px69b0l5vRhVRKkamsZ1aSNR9CA7sOzKt0FDQ/edit?usp=sharing SSL Statistik von Michi"
+        return " ".join(options["message"].split(" ")[1:])+" -> https://docs.google.com/spreadsheets/d/1mVHx01Px69b0l5vRhVRKkamsZ1aSNR9CA7sOzKt0FDQ/edit?usp=sharing SSL Statistik von Michi"
 
 
 def command_sub(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8"
     else:
-        return options["message"].split(" ")[1:]+" -> Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8"
+        return " ".join(options["message"].split(" ")[1:])+" -> Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8"
 
 
 def command_timemeout(options):
@@ -203,21 +203,21 @@ def command_turnier(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://discord.gg/8vGVBVu"
     else:
-        return options["message"].split(" ")[1:]+" -> https://discord.gg/8vGVBVu"
+        return " ".join(options["message"].split(" ")[1:])+" -> https://discord.gg/8vGVBVu"
 
 
 def command_twitch(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Hier ein ausführlicher Post, warum Michi nicht auf Twitch streamt: https://www.youtube.com/post/UgxOrW9vKASAf8LUb1J4AaABCQ"
     else:
-        return options["message"].split(" ")[1:]+" -> Hier ein ausführlicher Post, warum Michi nicht auf Twitch streamt: https://www.youtube.com/post/UgxOrW9vKASAf8LUb1J4AaABCQ"
+        return " ".join(options["message"].split(" ")[1:])+" -> Hier ein ausführlicher Post, warum Michi nicht auf Twitch streamt: https://www.youtube.com/post/UgxOrW9vKASAf8LUb1J4AaABCQ"
 
 
 def command_updateConsole(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
     else:
-        return options["message"].split(" ")[1:]+" -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
+        return " ".join(options["message"].split(" ")[1:])+" -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
 
 
 def command_uptime(options):
@@ -225,7 +225,7 @@ def command_uptime(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> " + str(datetime.datetime.utcnow()-options["streamAge"]).split(".")[0]
     else:
-        return options["message"].split(" ")[1:]+" -> " + str(datetime.datetime.utcnow()-options["streamAge"]).split(".")[0]
+        return " ".join(options["message"].split(" ")[1:])+" -> " + str(datetime.datetime.utcnow()-options["streamAge"]).split(".")[0]
 
 # PRESET
 
@@ -234,7 +234,7 @@ def command_name(options):
     if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> "  # + "TEXT"
     else:
-        return options["message"].split(" ")[1:]+" -> " + "TEXT"
+        return " ".join(options["message"].split(" ")[1:])+" -> " + "TEXT"
 
 
 commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!filter": command_filter, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
