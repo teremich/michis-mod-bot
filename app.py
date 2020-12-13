@@ -244,6 +244,8 @@ def main():
                             duration = 20
                         else:
                             duration = 300
+                        if TESTRUN:
+                            print("now trying strike with", userid, duration)
                         sendTimeout(userid, duration)
 
                     def listenForCaps(message):
@@ -293,7 +295,8 @@ def main():
                                     user["msgs"] = []
                                     break
 
-                    print(strikes)
+                    if TESTRUN:
+                        print(strikes)
                     for s in strikes:
                         if strikes[s]["made"] < time.time()-30*60:
                             del strikes[s]
@@ -324,7 +327,6 @@ def main():
 
                     time.sleep(5)
                 except (IndexError, Exception):
-                    print()
                     break
 
 
