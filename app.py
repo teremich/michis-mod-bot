@@ -218,7 +218,7 @@ def main():
                         except Exception as e:
                             global newestChatId
                             newestChatId = sendText(
-                                "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
+                                "Ich hätte dir schon nen {0}s Timeout gegeben, wenn ich könnte".format(duration))
                             print("didnt work, probably mod or streamer")
                             print(e)
                             return False
@@ -258,11 +258,8 @@ def main():
                             strike(message["authorDetails"]["channelId"])
 
                     def listenForFilter(message):
-                        messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
-                            " ")
-
-                        for word in messageWords:
-                            if word.lower() in wordFilter:
+                        for word in activatorWords:
+                            if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
                                 if TESTRUN:
                                     print("FOUND BAD WORD")
                                 userid = message["authorDetails"]["channelId"]
@@ -314,12 +311,16 @@ def main():
                             message = response["items"][j]
                             if TESTRUN:
                                 print(message)
+                            executeCommands(
+                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message, "strike": strike})
+                            if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!filter":
+                                wordFilter = getFilter()
                             listenForSpam(message)
                             listenForCaps(message)
                             listenForFilter(message)
                             listenForWords(message)
-                            executeCommands(
-                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message, "strike": strike})
+                            if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!listen":
+                                activatorWords = getListen()
 
                     time.sleep(5)
                 except (IndexError, Exception):
