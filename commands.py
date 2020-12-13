@@ -15,14 +15,14 @@ def command_xp(options):
         if item["name"] == "xp":
             xp = item["value"]
             break
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> "+str(xp)
     else:
         return options["message"].split(" ")[1:]+" -> "+str(xp)
 
 
 def command_hunad(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Ich hab 577 Stunden für Level 100 und 626 Stunden für 1M XP gebraucht."
     else:
         return options["message"].split(" ")[1:]+" -> Ich hab 577 Stunden für Level 100 und 626 Stunden für 1M XP gebraucht."
@@ -33,7 +33,7 @@ def command_afterstream(options):
 
 
 def command_crossplay(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> kChamp sagt im Wortlaut: Unfortunately, crossplay isn't supported because we will be updating the game with different content and at different rates."
     else:
         return options["message"].split(" ")[1:]+" -> kChamp sagt im Wortlaut: Unfortunately, crossplay isn't supported because we will be updating the game with different content and at different rates."
@@ -44,14 +44,14 @@ def command_debug(options):
 
 
 def command_discord(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://discord.gg/Afwxq8Y"
     else:
         return options["message"].split(" ")[1:]+" -> https://discord.gg/Afwxq8Y"
 
 
 def command_donation(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://www.tipeeestream.com/termpounator/donation"
     else:
         return options["message"].split(" ")[1:]+" -> https://www.tipeeestream.com/termpounator/donation"
@@ -78,21 +78,21 @@ def command_filter(options):
 
 
 def command_godgays(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Mein God Rays-Unlock gegen den Entwickler kChamp: https://www.youtube.com/watch?v=9ZxzMyzQ594&t=12s"
     else:
         return options["message"].split(" ")[1:]+" -> Mein God Rays-Unlock gegen den Entwickler kChamp: https://www.youtube.com/watch?v=9ZxzMyzQ594&t=12s"
 
 
 def command_konsole(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
     else:
         return options["message"].split(" ")[1:]+" -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
 
 
 def command_lieblingswaffe(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Aufgrund der extremen Variabilität von Spielmodi, Distanz und Position habe ich nicht DIE eine Lieblingswaffe. Jede Waffe kann in einer bestimmten Situation gut sein."
     else:
         return options["message"].split(" ")[1:]+" -> Aufgrund der extremen Variabilität von Spielmodi, Distanz und Position habe ich nicht DIE eine Lieblingswaffe. Jede Waffe kann in einer bestimmten Situation gut sein."
@@ -120,14 +120,14 @@ def command_listen(options):
 
 def command_michi(options):
     alter = datetime.date.today() - datetime.date(1997, 10, 29)
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi ist {0} und studiert Maschinenbau im Master. Mehr Infos zum Studium findet ihr in der Uni-Talk Playlist".format(math.floor(alter.days/365.25))
     else:
         return options["message"].split(" ")[1:]+" -> Michi ist {0} und studiert Maschinenbau im Master. Mehr Infos zum Studium findet ihr in der Uni-Talk Playlist".format(math.floor(alter.days/365.25))
 
 
 def command_reddit(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://www.reddit.com/r/dermichi"
     else:
         return options["message"].split(" ")[1:]+" -> https://www.reddit.com/r/dermichi"
@@ -142,14 +142,14 @@ def command_roadto(options):
         if item["name"] == "xp":
             xp = item["value"]
             break
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> "+str(2500000-int(xp))
     else:
         return options["message"].split(" ")[1:]+" -> "+str(2500000-int(xp))
 
 
 def command_sew(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Hier findest du Michi's Shoot Every Weapon: https://youtube.com/playlist?list=PLRL2wVgCQQsvNAPoxHWNiXjz5J6FONlgA"
     else:
         return options["message"].split(" ")[1:]+" -> Hier findest du Michi's Shoot Every Weapon: https://youtube.com/playlist?list=PLRL2wVgCQQsvNAPoxHWNiXjz5J6FONlgA"
@@ -165,21 +165,21 @@ def command_spielstunden(options):
         if game["appid"] == 326460:
             spielstunden = game["playtime_forever"]
             break
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + (" -> %.2f" % (int(spielstunden)/60.0))
     else:
         return options["message"].split(" ")[1:]+(" -> %.2f" % (int(spielstunden)/60.0))
 
 
 def command_statistik(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://docs.google.com/spreadsheets/d/1mVHx01Px69b0l5vRhVRKkamsZ1aSNR9CA7sOzKt0FDQ/edit?usp=sharing SSL Statistik von Michi"
     else:
         return options["message"].split(" ")[1:]+" -> https://docs.google.com/spreadsheets/d/1mVHx01Px69b0l5vRhVRKkamsZ1aSNR9CA7sOzKt0FDQ/edit?usp=sharing SSL Statistik von Michi"
 
 
 def command_sub(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8"
     else:
         return options["message"].split(" ")[1:]+" -> Die Kanalmitgliedschaft ist verfügbar! Je nach Stufe erhaltet ihr verschiedene Vorteile wie Discord-Rollen oder eigene Videos. weitere Infos: youtu.be/G9kQPEegHd8"
@@ -196,21 +196,21 @@ def command_tlou(options):
 
 
 def command_turnier(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> https://discord.gg/8vGVBVu"
     else:
         return options["message"].split(" ")[1:]+" -> https://discord.gg/8vGVBVu"
 
 
 def command_twitch(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Hier ein ausführlicher Post, warum Michi nicht auf Twitch streamt: https://www.youtube.com/post/UgxOrW9vKASAf8LUb1J4AaABCQ"
     else:
         return options["message"].split(" ")[1:]+" -> Hier ein ausführlicher Post, warum Michi nicht auf Twitch streamt: https://www.youtube.com/post/UgxOrW9vKASAf8LUb1J4AaABCQ"
 
 
 def command_updateConsole(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
     else:
         return options["message"].split(" ")[1:]+" -> Michi hat keine Informationen zur Entwicklung von SSL auf jeglichen Konsolen"
@@ -218,7 +218,7 @@ def command_updateConsole(options):
 
 def command_uptime(options):
     print(datetime.datetime.utcnow()-options["streamAge"])
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> " + str(datetime.datetime.utcnow()-options["streamAge"]).split(".")[0]
     else:
         return options["message"].split(" ")[1:]+" -> " + str(datetime.datetime.utcnow()-options["streamAge"]).split(".")[0]
@@ -227,7 +227,7 @@ def command_uptime(options):
 
 
 def command_name(options):
-    if len(options["message"].split(" ")) < 1:
+    if len(options["message"].split(" ")) < 2:
         return options["username"] + " -> "  # + "TEXT"
     else:
         return options["message"].split(" ")[1:]+" -> " + "TEXT"
