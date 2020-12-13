@@ -63,7 +63,7 @@ def command_filter(options):
     print(toParse, options)
     if toParse[1] == "add" and options["isMod"]:
         with open("filter.txt", "a", encoding="utf-8") as f:
-            f.write("\n" + " ".join(toParse[2:]))
+            f.write("\n" + " ".join(toParse[2:]).lower())
         return "successfully added '"+" ".join(toParse[2:])+"' to the filter"
     elif toParse[1] == "remove" and options["isMod"]:
         print("trying to remove something")
@@ -71,7 +71,7 @@ def command_filter(options):
             ret = "successfully removed "
             for line in f:
                 print(line)
-                if " ".join(toParse[2:]) in line:
+                if " ".join(toParse[2:]).lower() in line:
                     ret += line + ", "
                     line = ""
             return ret
@@ -108,18 +108,20 @@ def command_listen(options):
     print(toParse)
     if toParse[1] == "add" and options["isMod"]:
         with open("listen.txt", "a", encoding="utf-8") as f:
-            f.write("\n" + toParse[2] + ":" + " ".join(toParse[3:]))
-        return "successfully added '"+" ".join(toParse[2:])+"' to the listen list"
+            f.write("\n" + toParse[2] + ":" + " ".join(toParse[3:]).lower())
+        return "successfully added '"+toParse[2]+"' to the listen list"
     elif toParse[1] == "remove" and options["isMod"]:
         with open("listen.txt", "r+", encoding="utf-8") as f:
             ret = "successfully removed "
             for line in f:
-                if " ".join(toParse[2:]) in line.split(":")[0]:
+                if " ".join(toParse[2:]).lower() in line.split(":")[0]:
                     ret += line.split(":")[0] + ", "
                     line = ""
             return ret
-    else:
+    elif options["isMod"]:
         return options["username"] + " -> Error! Syntax for this command: !listen <add|remove> <word> <response expression>"
+    else:
+        return options["username"] + " -> du bist kein Mod"
 
 
 def command_michi(options):

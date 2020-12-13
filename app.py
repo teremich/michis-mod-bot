@@ -316,12 +316,12 @@ def main():
                                 print(message)
                             executeCommands(
                                 {"sendText": sendText, "streamAge": STREAMAGE, "message": message, "strike": strike})
-                            if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!filter":
-                                wordFilter = getFilter()
                             listenForSpam(message)
                             listenForCaps(message)
                             listenForFilter(message)
                             listenForWords(message)
+                            if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!filter":
+                                wordFilter = getFilter()
                             if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!listen":
                                 activatorWords = getListen()
 
