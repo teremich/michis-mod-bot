@@ -218,7 +218,7 @@ def main():
                         except Exception as e:
                             global newestChatId
                             newestChatId = sendText(
-                                "Ich hätte dir schon nen {0}s Timeout gegeben, wenn ich könnte".format(duration))
+                                "Ich hätte dir schon nen "+duration+"s Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
                             print(e)
                             return False
