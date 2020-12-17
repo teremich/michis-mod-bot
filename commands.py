@@ -62,19 +62,24 @@ def command_filter(options):
     toParse = options["message"].split(" ")
     print(toParse, options)
     if toParse[1] == "add" and options["isMod"]:
+        if (len(toParse[2].split(":")) > 1):
+            return "please remove ':' from your listen parameter"
         with open("filter.txt", "a", encoding="utf-8") as f:
             f.write("\n" + " ".join(toParse[2:]).lower())
         return "successfully added '"+" ".join(toParse[2:])+"' to the filter"
     elif toParse[1] == "remove" and options["isMod"]:
         print("trying to remove something")
-        with open("filter.txt", "r+", encoding="utf-8") as f:
-            ret = "successfully removed "
+        file = ""
+        ret = "successfully removed "
+        with open("filter.txt", "r", encoding="utf-8") as f:
             for line in f:
-                print(line)
-                if " ".join(toParse[2:]).lower() in line:
+                if line != " ".join(toParse[2:]).lower():
+                    file = file + line
+                else:
                     ret += line + ", "
-                    line = ""
-            return ret
+        with open("filter.txt", "w", encoding="utf-8") as f:
+            f.write(file.strip())
+        return ret
     elif options["isMod"]:
         return options["username"] + " -> Error! Syntax for this command: !filter <add|remove> <expression>"
     else:
@@ -107,17 +112,24 @@ def command_listen(options):
     toParse = options["message"].split(" ")
     print(toParse)
     if toParse[1] == "add" and options["isMod"]:
+        if (len(toParse[2].split(":")) > 1):
+            return "please remove ':' from your listen parameter"
         with open("listen.txt", "a", encoding="utf-8") as f:
             f.write("\n" + toParse[2] + ":" + " ".join(toParse[3:]).lower())
         return "successfully added '"+toParse[2]+"' to the listen list"
     elif toParse[1] == "remove" and options["isMod"]:
-        with open("listen.txt", "r+", encoding="utf-8") as f:
-            ret = "successfully removed "
+        file = ""
+        ret = "successfully removed "
+        with open("listen.txt", "r", encoding="utf-8") as f:
             for line in f:
-                if " ".join(toParse[2:]).lower() in line.split(":")[0]:
-                    ret += line.split(":")[0] + ", "
-                    line = ""
-            return ret
+                if line.split(":")[0] != " ".join(toParse[2:]).lower():
+                    file = file + line
+                else:
+                    ret += line + ", "
+        with open("listen.txt", "w", encoding="utf-8") as f:
+            f.write(file.strip())
+        print()
+        return ret
     elif options["isMod"]:
         return options["username"] + " -> Error! Syntax for this command: !listen <add|remove> <word> <response expression>"
     else:
