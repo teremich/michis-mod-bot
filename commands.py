@@ -251,7 +251,7 @@ def command_name(options):
         return " ".join(options["message"].split(" ")[1:])+" -> " + "TEXT"
 
 
-commandNames = {"!100": command_hunad, "!afterstream": command_afterstream, "!crossplay": command_crossplay, "!debug": command_debug, "!discord": command_discord, "!donation": command_donation, "!filter": command_filter, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
+commandNames = {"!100": command_hunad, "!crossplay": command_crossplay, "!discord": command_discord, "!donation": command_donation, "!filter": command_filter, "!godrays": command_godgays, "!konsole": command_konsole, "!lieblingswaffe": command_lieblingswaffe,
                 "!listen": command_listen, "!michi": command_michi, "!reddit": command_reddit, "!roadto": command_roadto, "!sew": command_sew, "!spielstunden": command_spielstunden, "!statistik": command_statistik,  "!sub": command_sub, "!timemeout": command_timemeout, "!tlou": command_tlou, "!turnier": command_turnier, "!twitch": command_twitch, "!updateconsole": command_updateConsole, "!uptime": command_uptime, "!xp": command_xp}
 
 

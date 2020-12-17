@@ -260,18 +260,15 @@ def main():
                             strike(message["authorDetails"]["channelId"])
 
                     def listenForFilter(message):
-                        for word in activatorWords:
+                        for word in wordFilter:
                             if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
-                                if TESTRUN:
-                                    print("FOUND BAD WORD")
-                                userid = message["authorDetails"]["channelId"]
                                 print("strike reason: ", word)
                                 answers = ["Kannst du das nochmal ohne '"+word +
                                            "' sagen?", "Wir sprechen nicht mehr über "+word]
                                 global newestChatId
                                 newestChatId = sendText(rndFromList(answers),
                                                         message["authorDetails"]["displayName"])
-                                strike(userid)
+                                strike(message["authorDetails"]["channelId"])
 
                     def listenForSpam(message):
                         global users
