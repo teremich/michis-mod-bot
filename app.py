@@ -1,6 +1,7 @@
 import os
 import time
 import math
+import random
 import datetime
 
 import google_auth_oauthlib.flow
@@ -77,9 +78,7 @@ def count(item, L):
 
 
 def rndFromList(L):
-    max = len(L)
-    range = math.random()*max
-    index = math.floor(range)
+    index = math.floor(random.randrange(len(L)))
     return L[index]
 
 
