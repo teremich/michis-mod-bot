@@ -1,4 +1,4 @@
-# michis-mod-bot
+# michis mod bot
 
 This is a youtube livestream moderation bot specifically designed for "Der Michi" (youtube.com/channel/UCGDTo1icA1LW56wWGIQ9GQA).
 
@@ -21,5 +21,6 @@ At start choose to log in via the bot's account.
 
 TODO:
 
+-   commands afterstream and debug (last one only if neccessary)
 -   test our limits (use the bot in a real live stream)
 -   read the pinned messages in the developer's discord chat

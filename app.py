@@ -1,6 +1,7 @@
 import os
 import time
 import math
+import random
 import datetime
 
 import google_auth_oauthlib.flow
@@ -11,6 +12,10 @@ from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
 TESTRUN = False
+# This should be the youtube channel id of your streamer
+STREAMERID = "UCGDTo1icA1LW56wWGIQ9GQA"
+if TESTRUN:
+    STREAMERID = "UCvlsCHPqjj4Ydanpp_QZeOA"
 
 # Get credentials and create an API client
 scopes = ["https://www.googleapis.com/auth/youtube.readonly",
@@ -73,9 +78,7 @@ def count(item, L):
 
 
 def rndFromList(L):
-    max = len(L)
-    range = math.random()*max
-    index = math.floor(range)
+    index = math.floor(random.randrange(len(L)))
     return L[index]
 
 
@@ -85,7 +88,7 @@ def main():
 
         request = stream_youtube.search().list(
             part="snippet",
-            channelId="UCGDTo1icA1LW56wWGIQ9GQA",
+            channelId=STREAMERID,
             eventType="live",
             maxResults=1,
             type="video"
@@ -146,15 +149,19 @@ def main():
             global newestChatId
             if len(response["items"]) > 0:
                 newestChatId = response["items"][-1]["id"]
+            else:
+                print(len(response["items"]))
             while True:
                 try:
                     # Getting 2000 messages from youtube
+                    print("searching again for messages")
                     request = youtube.liveChatMessages().list(
                         liveChatId=CHATID,
                         part="id,snippet,authorDetails",
                         maxResults=2000
                     )
                     response = request.execute()
+                    print(len(response["items"]))
                     if "error" in response.keys():
                         print("Could not read Chat Messages, trying to reconnect...")
                         raise IndexError(
@@ -197,7 +204,7 @@ def main():
                                     "snippet": {
                                         "type": "temporary",
                                         "bannedUserDetails": {
-                                                "channelId": channelId
+                                            "channelId": channelId
                                         },
                                         "liveChatId": CHATID,
                                         "banDurationSeconds": duration
@@ -210,13 +217,12 @@ def main():
                         except Exception as e:
                             global newestChatId
                             newestChatId = sendText(
-                                "Ich hätte dir schon nen Timeout gegeben, wenn ich könnte")
+                                "Ich hätte dir schon nen "+duration+"s Timeout gegeben, wenn ich könnte")
                             print("didnt work, probably mod or streamer")
                             print(e)
                             return False
 
                     def listenForWords(message):
-                        # Define words to listen for and the responses to give
                         for word in activatorWords:
                             if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
                                 global newestChatId
@@ -236,35 +242,31 @@ def main():
                             duration = 20
                         else:
                             duration = 300
+                        if TESTRUN:
+                            print("now trying strike with", userid, duration)
                         sendTimeout(userid, duration)
 
                     def listenForCaps(message):
                         msg = message["snippet"]["textMessageDetails"]["messageText"]
                         if (msg == msg.upper() and len(msg) > 5):
                             print("strike reason: ", msg)
-                            strike(message["authorDetails"]["channelId"])
                             answers = [
                                 "AHHH! CAPS", "bitte kein caps :(", "nein nein nein! böses caps!", "kleine Buchstaben = Großes Ding, GROẞE BUCHSTABEN = ...naja, kannste dir selber denken", "Wir verstehen dich auch, wenn du nicht RUMBRÜLLST!"]
                             global newestChatId
                             newestChatId = sendText(rndFromList(answers),
                                                     message["authorDetails"]["displayName"])
+                            strike(message["authorDetails"]["channelId"])
 
                     def listenForFilter(message):
-                        messageWords = message["snippet"]["textMessageDetails"]["messageText"].split(
-                            " ")
-
-                        for word in messageWords:
-                            if word.lower() in wordFilter:
-                                if TESTRUN:
-                                    print("FOUND BAD WORD")
-                                userid = message["authorDetails"]["channelId"]
+                        for word in wordFilter:
+                            if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
                                 print("strike reason: ", word)
-                                strike(userid)
                                 answers = ["Kannst du das nochmal ohne '"+word +
                                            "' sagen?", "Wir sprechen nicht mehr über "+word]
                                 global newestChatId
                                 newestChatId = sendText(rndFromList(answers),
                                                         message["authorDetails"]["displayName"])
+                                strike(message["authorDetails"]["channelId"])
 
                     def listenForSpam(message):
                         global users
@@ -288,7 +290,8 @@ def main():
                                     user["msgs"] = []
                                     break
 
-                    print(strikes)
+                    if TESTRUN:
+                        print(strikes)
                     for s in strikes:
                         if strikes[s]["made"] < time.time()-30*60:
                             del strikes[s]
@@ -306,12 +309,16 @@ def main():
                             message = response["items"][j]
                             if TESTRUN:
                                 print(message)
+                            executeCommands(
+                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message, "strike": strike})
                             listenForSpam(message)
                             listenForCaps(message)
                             listenForFilter(message)
                             listenForWords(message)
-                            executeCommands(
-                                {"sendText": sendText, "streamAge": STREAMAGE, "message": message})
+                            if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!filter":
+                                wordFilter = getFilter()
+                            if message["snippet"]["textMessageDetails"]["messageText"][:7] == "!listen":
+                                activatorWords = getListen()
 
                     time.sleep(5)
                 except (IndexError, Exception):
