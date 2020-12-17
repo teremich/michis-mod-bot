@@ -11,7 +11,7 @@ import googleapiclient.errors
 from commands import executeCommands
 
 # This should be 'False', pls fix, if I uploaded it incorrectly
-TESTRUN = True
+TESTRUN = False
 # This should be the youtube channel id of your streamer
 STREAMERID = "UCGDTo1icA1LW56wWGIQ9GQA"
 if TESTRUN:
@@ -204,7 +204,7 @@ def main():
                                     "snippet": {
                                         "type": "temporary",
                                         "bannedUserDetails": {
-                                                "channelId": channelId
+                                            "channelId": channelId
                                         },
                                         "liveChatId": CHATID,
                                         "banDurationSeconds": duration
