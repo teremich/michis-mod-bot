@@ -224,7 +224,6 @@ def main():
                             return False
 
                     def listenForWords(message):
-                        # Define words to listen for and the responses to give
                         for word in activatorWords:
                             if (word in message["snippet"]["textMessageDetails"]["messageText"].lower()):
                                 global newestChatId

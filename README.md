@@ -21,5 +21,6 @@ At start choose to log in via the bot's account.
 
 TODO:
 
+-   commands afterstream and debug (last one only if neccessary)
 -   test our limits (use the bot in a real live stream)
 -   read the pinned messages in the developer's discord chat
