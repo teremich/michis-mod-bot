@@ -4,8 +4,9 @@ This is a youtube livestream moderation bot specifically designed for "Der Michi
 
 What to install:
 
--   python 3.8.5
+-   python 3.8.5 (this version is tested but preferable is the newest version)
 -   pip
+    -   best practice is to install packages in a virtual environment
     -   pip install --upgrade google-api-python-client
     -   pip install --upgrade google-auth-oauthlib google-auth-httplib2
 
@@ -19,8 +20,3 @@ Things to do if you want to copy the code:
 start with "python app.py"
 At start choose to log in via the bot's account.
 
-TODO:
-
--   commands afterstream and debug (last one only if neccessary)
--   test our limits (use the bot in a real live stream)
--   read the pinned messages in the developer's discord chat
